@@ -1,0 +1,1 @@
+lp -d Brother_TD_4100N post.ps -o media=DC55x25 -o  BrAutoTapeCut=OFF

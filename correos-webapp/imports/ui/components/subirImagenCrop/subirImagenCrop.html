@@ -1,0 +1,37 @@
+<div layout="column" id="subirImagenCrop">
+  <div ngf-drop
+    ngf-select
+    ngf-change="subirImagenCrop.addImages($files)"
+    ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
+    class="drop-box"
+    ngf-multiple="false"
+    ngf-allow-dir="false"
+    ngf-accept="'image/*'"
+    ngf-drop-available="true"
+    ng-hide="subirImagenCrop.cropImgSrc || subirImagenCrop.imagen">
+    <div>Haz click para seleccionar el archivo</div>
+    <div>
+      <strong>o si lo prefieres</strong>
+    </div>
+    <div>También puedes arrastrar el archivo aquí</div>
+  </div>
+  <div ng-show="subirImagenCrop.cropImgSrc && !subirImagenCrop.imagen" layout="column" class="ng-crop">
+    <div>
+      <h3>Edit &amp; crop</h3>
+      <md-button ng-click="subirImagenCrop.save()" class="md-primary">
+        Guardar Imagen
+      </md-button>
+      <md-button ng-click="subirImagenCrop.reset()">
+        Cancelar
+      </md-button>
+    </div>
+    <div class="ng-crop-container">
+      <img-crop image="subirImagenCrop.cropImgSrc" result-image="subirImagenCrop.myCroppedImage" area-type="square"></img-crop>
+    </div>
+  </div>
+  <div ng-if="subirImagenCrop.imagen" layout="row" class="images-container-title">
+    <div class="party-image-container" class="main-image" >
+      Foto: <img ng-src="{{ subirImagenCrop.imagen.url }}"/>
+    </div>
+  </div>
+</div>
