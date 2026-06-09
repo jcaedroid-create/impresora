@@ -2,6 +2,11 @@
 
 Aplicación web para gestión de impresión de sellos con impresora USB, desarrollada con Meteor 1.4 y AngularJS.
 
+## Archivos cambiados
+- kiosko.js - import/ui/component/kiosko
+- main.js - server/
+- server_methods.js - server
+
 ---
 
 ## Clonar el repositorio

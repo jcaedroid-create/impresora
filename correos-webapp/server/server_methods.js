@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 const { exec } = require('child_process');
-const path = require('path');
+const Future = Npm.require('fibers/future');
 
 // Nombre de la impresora - ajustar según tu configuración
 const PRINTER_NAME = 'Brother_4520_1';
@@ -35,6 +35,3 @@ Meteor.methods({
     return future.wait();
   }
 });
-
-// Fibers/Future para operaciones async en Meteor
-const Future = Npm.require('fibers/future');
