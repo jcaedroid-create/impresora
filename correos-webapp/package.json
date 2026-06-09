@@ -2,8 +2,7 @@
   "name": "afkar",
   "private": true,
   "scripts": {
-    "start": "meteor run",
-    "test": "meteor test --driver-package practicalmeteor:mocha --port 3100"
+    "start": "meteor run"
   },
   "dependencies": {
     "angular": "^1.5.8",
@@ -17,9 +16,5 @@
     "meteor-node-stubs": "~0.2.0",
     "ng-file-upload": "^12.2.13",
     "ng-img-crop": "^0.2.0"
-  },
-  "devDependencies": {
-    "chai": "^4.3.4",
-    "sinon": "^12.0.1"
   }
 }

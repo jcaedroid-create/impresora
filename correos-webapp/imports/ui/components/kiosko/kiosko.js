@@ -346,6 +346,13 @@ class Kiosko {
  	}
 	}
 // IMPRIMIR NORMAL ----------------------	
+
+// ============================================================
+// SNIPPET: Añadir estos métodos al controlador de Kiosko
+// (donde están imprimirProtocolo, imprimirFilatelia, etc.)
+// ============================================================
+
+// fin pausar reanudar impresora 1
 imprimirFilatelia(){
 	this.perfilpros = "filatelia";
 	this.imprimir();
@@ -733,26 +740,6 @@ imprimirSPDE(){
 		this.tarifaCS2Cantidad = 0;
 		this.tarifaAT2Cantidad = 0;
 		this.tarifa4T2Cantidad = 0;
-	}
-
-	pausarImpresora(){
-		Meteor.call('pausarImpresora', (error, result) => {
-			if (error) {
-				alert('Error al pausar la impresora: ' + error.reason);
-			} else {
-				alert(result);
-			}
-		});
-	}
-
-	reanudarImpresora(){
-		Meteor.call('reanudarImpresora', (error, result) => {
-			if (error) {
-				alert('Error al reanudar la impresora: ' + error.reason);
-			} else {
-				alert(result);
-			}
-		});
 	}
 
 }

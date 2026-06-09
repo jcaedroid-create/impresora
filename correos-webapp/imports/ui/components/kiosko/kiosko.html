@@ -11,12 +11,14 @@
 	</div> -->
 	<div layout="row" layout-align="center center" style="padding-bottom:0; padding-top:0; background-color:white;">		
 		<div layout="column" layout-align="center center" flex>
+
 			<md-button class="md-raised md-warn" ng-click="Kiosko.pausarImpresora()" style="margin: 4px;">
 				<i class="fa fa-pause" aria-hidden="true"></i> Pausar impresora
 			</md-button>
 			<md-button class="md-raised md-primary" ng-click="Kiosko.reanudarImpresora()" style="margin: 4px;">
 				<i class="fa fa-play" aria-hidden="true"></i> Reanudar impresora
-			</md-button>
+			</md-button> 
+			
 			<!--<img ng-src="{{Kiosko.modelo1}}"> 
 			<img ng-src="img/sellos/cibeles.jpg">
 		-PANTALLA 17" <img ng-src="{{'img/sellos/'+Kiosko.nombreModelo1+'.jpg'}}" width="400px;">
@@ -31,9 +33,8 @@
 
 			<p style="color: black; font-size: 14px; font-weight: bold; text-align: left;">{{Kiosko.TEmod1}}: Tira Especial <br>{{Kiosko.fechaInstalacion}}<br>
 			>-->	
-				<p style="color: black; font-size: 14px; font-weight: bold; text-align: left;"><br>{{Kiosko.fechaInstalacion}}<br>{{Kiosko.evento}} <br> <br> </p>
-				<p style="color: black; font-size: 11px; font-weight: bold;">           {{Kiosko.modocod}}{{Kiosko.elmes}}{{Kiosko.pais}}{{Kiosko.elannio}} {{Kiosko.nombre}}-{{Kiosko.clientecod}}-001</p>
-				<p style="text-align: center; color: gray; font-size: 14px; font-weight: bold;"> </p>
+				<p style="color: black; font-size: 14.4px; font-weight: bold;">{{Kiosko.fechaInstalacion}}<br> {{Kiosko.evento}}<br> <br><br><br><br><br></p>
+				<p style="color: black; font-size: 11px; font-weight: bold;">           {{Kiosko.modocod}}{{Kiosko.elmes}}{{Kiosko.pais}}{{Kiosko.elannio}} {{Kiosko.nombre}}-{{Kiosko.clientecod}}-001<br> <br><br><br><br><br><br></p>
 			</div>
 		</div>
 
@@ -91,9 +92,8 @@
 			<div class="wrapper">
 			
 			<img ng-click="Kiosko.imprimirSPDE()" ng-src="{{'img/sellos/'+Kiosko.nombreModelo2+'.jpg'}}" width="300px;">	
-				<p style="color: black; font-size: 14px; font-weight: bold; text-align: left;"><br>{{Kiosko.fechaInstalacion}}<br>{{Kiosko.evento}} <br> <br> </p>
-				<p style="color: black; font-size: 11px; font-weight: bold; text-align: left;">           {{Kiosko.modocod}}{{Kiosko.elmes}}{{Kiosko.pais}}{{Kiosko.elannio}} {{Kiosko.nombre}}-{{Kiosko.clientecod}}-001 </p>
-				<p style="text-align: center; color: gray; font-size: 14px; font-weight: bold;"> </p>
+				<p style="color: black; font-size: 14.4px; font-weight: bold;">{{Kiosko.fechaInstalacion}}<br> {{Kiosko.evento}}<br> <br><br><br><br><br></p>
+				<p style="color: black; font-size: 11px; font-weight: bold;">           {{Kiosko.modocod}}{{Kiosko.elmes}}{{Kiosko.pais}}{{Kiosko.elannio}} {{Kiosko.nombre}}-{{Kiosko.clientecod}}-001<br> <br><br><br><br><br><br></p>
 			</div>
 			<!--<p style="text-align: center; color: dimgray; font-size: 15px; font-weight: bold;"></p>
 			<p style="text-align: center; color: gray; font-size: 14px; font-weight: bold;"> SPDE </p>-->
