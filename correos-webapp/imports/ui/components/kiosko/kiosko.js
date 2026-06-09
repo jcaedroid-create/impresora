@@ -735,6 +735,26 @@ imprimirSPDE(){
 		this.tarifa4T2Cantidad = 0;
 	}
 
+	pausarImpresora(){
+		Meteor.call('pausarImpresora', (error, result) => {
+			if (error) {
+				alert('Error al pausar la impresora: ' + error.reason);
+			} else {
+				alert(result);
+			}
+		});
+	}
+
+	reanudarImpresora(){
+		Meteor.call('reanudarImpresora', (error, result) => {
+			if (error) {
+				alert('Error al reanudar la impresora: ' + error.reason);
+			} else {
+				alert(result);
+			}
+		});
+	}
+
 }
 
 const name = 'kiosko';
