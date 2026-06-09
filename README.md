@@ -7,6 +7,37 @@ Aplicación web para gestión de impresión de sellos con impresora USB, desarro
 - main.js - server/
 - server_methods.js - server
 
+## LOGS
+** You've set up some data subscriptions with Meteor.publish(), but
+** you still have autopublish turned on. Because autopublish is still
+** on, your Meteor.publish() calls won't have much effect. All data
+** will still be sent to all clients.
+**
+** Turn off autopublish by removing the autopublish package:
+**
+**   $ meteor remove autopublish
+**
+** .. and make sure you have Meteor.publish() and Meteor.subscribe() calls
+** for each collection that you want clients to see.
+
+/Users/afkar/.meteor/packages/meteor-tool/.1.4.3_2.1nlov6q++os.osx.x86_64+web.browser+web.cordova/mt-os.osx.x86_64/dev_bundle/server-lib/node_modules/fibers/future.js:280
+						throw(ex);
+						^
+
+Error: A method named 'pausarImpresora' is already defined
+    at packages/ddp-server/livedata_server.js:1581:15
+    at Function._.each._.forEach (packages/underscore.js:147:22)
+    at [object Object]._.extend.methods (packages/ddp-server/livedata_server.js:1577:7)
+    at meteorInstall.server.server_methods.js (server/server_methods.js:9:8)
+    at fileEvaluate (packages/modules-runtime.js:197:9)
+    at require (packages/modules-runtime.js:120:16)
+    at /Users/afkar/afkar/correos/correos-webapp/.meteor/local/build/programs/server/app/app.js:702:1
+    at /Users/afkar/afkar/correos/correos-webapp/.meteor/local/build/programs/server/boot.js:303:34
+    at Array.forEach (native)
+    at Function._.each._.forEach (/Users/afkar/.meteor/packages/meteor-tool/.1.4.3_2.1nlov6q++os.osx.x86_64+web.browser+web.cordova/mt-os.osx.x86_64/dev_bundle/server-lib/node_modules/underscore/underscore.js:79:11)
+Exited with code: 1
+Your application is crashing. Waiting for file change.
+
 ---
 
 ## Clonar el repositorio
