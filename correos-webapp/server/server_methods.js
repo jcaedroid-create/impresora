@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 
 const { execSync } = require('child_process');
 
-// Nombre de la impresora - ajustar según tu configuración
-const PRINTER_NAME = 'Brother_4520_1';
+// Nombre de la impresora - configurable via variable de entorno PRINTER_NAME
+const PRINTER_NAME = process.env.PRINTER_NAME || 'Brother_4520_1';
 
 Meteor.methods({
   pausarImpresora() {

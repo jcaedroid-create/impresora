@@ -10,6 +10,16 @@ import sys
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
+# ─────────────────────────────────────────────
+# Nombres de impresoras (configurables via variables de entorno)
+# PRINTER_1: Impresora de etiquetas rollo 1
+# PRINTER_2: Impresora de etiquetas rollo 2
+# PRINTER_TICKET: Impresora de tickets
+# ─────────────────────────────────────────────
+PRINTER_1 = os.environ.get('PRINTER_1', 'Brother_4520_1')
+PRINTER_2 = os.environ.get('PRINTER_2', 'Brother_2')
+PRINTER_TICKET = os.environ.get('PRINTER_TICKET', 'Brother_T')
+
 def imprimir():
 	
 	losprod=0
@@ -17,49 +27,49 @@ def imprimir():
 	# etiqueta 1 -o orientation-requested=6   -o number -up=6 
 	if os.path.getsize('stamp_simple_1_a.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_4520_1 stamp_simple_1_a.pdf -o orientation-requested=6  -o media=Custom.55x25mm -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_1_a.pdf -o orientation-requested=6  -o media=Custom.55x25mm -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_1)
 	if os.path.getsize('stamp_simple_1_a2.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_4520_1 stamp_simple_1_a2.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_1_a2.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_1)
 	if os.path.getsize('stamp_simple_1_b.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_4520_1 stamp_simple_1_b.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6  -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_1_b.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6  -o BrBiDiPrint=OFF" % PRINTER_1)
 	if os.path.getsize('stamp_simple_1_c.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_4520_1 stamp_simple_1_c.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6  -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_1_c.pdf -o orientation-requested=6 -o media=DC55x25 -o BrCutLabel=6  -o BrBiDiPrint=OFF" % PRINTER_1)
 	
 	# etiqueta 2
 
 	if os.path.getsize('stamp_simple_2_a.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_2 stamp_simple_2_a.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_2_a.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_2)
 	if os.path.getsize('stamp_simple_2_a2.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_2 stamp_simple_2_a2.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_2_a2.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_2)
 	if os.path.getsize('stamp_simple_2_b.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_2 stamp_simple_2_b.pdf -o media=DC55x25 -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_2_b.pdf -o media=DC55x25 -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_2)
 	if os.path.getsize('stamp_simple_2_c.pdf')>2000:
 		losprod=losprod+1
-		os.system("lp -d Brother_2 stamp_simple_2_c.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_simple_2_c.pdf -o media=DC55x25  -o BrCutLabel=6 -o BrBiDiPrint=OFF" % PRINTER_2)
 	
 	# TIRA ESPECIAL
 
 	if os.path.getsize('stamp_tira_1_especial.pdf')>2000:
-		os.system("lp -d Brother_4520_1 stamp_tira_1_especial.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_tira_1_especial.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF" % PRINTER_1)
 	
 	if os.path.getsize('stamp_tira_2_especial.pdf')>2000:
-		os.system("lp -d Brother_2 stamp_tira_2_especial.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_tira_2_especial.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF" % PRINTER_2)
 
 	# TIRA NORMAL
 
 	if os.path.getsize('stamp_tira_1.pdf')>2000:
 		losprod=losprod+2 #2
-		os.system("lp -d Brother_4520_1 stamp_tira_1.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_tira_1.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF" % PRINTER_1)
 	
 	if os.path.getsize('stamp_tira_2.pdf')>2000:
 		losprod=losprod+2 #2
-		os.system("lp -d Brother_2 stamp_tira_2.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF")
+		os.system("lp -d %s stamp_tira_2.pdf -o media=DC55x25 -o orientation-requested=6 -o BrCutLabel=4 -o BrBiDiPrint=OFF" % PRINTER_2)
 	#if os.path.getsize('ticket.pdf')>2000:
 	#	os.system("lp -d Brother_TD_4100N_T ticket.pdf -o media=Custom.78x165mm")
 
@@ -70,30 +80,30 @@ def imprimir():
 
 	if os.path.getsize('ticket.pdf')>2000:
 		if losprod == 1:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x117mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x117mm" % PRINTER_TICKET)
 		#NO: os.system("lp -d Brother_TD_4100N_T ticket.pdf -o media=Custom.78x" + txtmedida + "mm")
 		#NO: os.system("lp -d Brother_TD_4100N_T ticket.pdf -o media=Custom.78x", txtmedida ,"mm")	
 		elif losprod == 2:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x120mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x120mm" % PRINTER_TICKET)
 		elif losprod == 3:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x123mm")	
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x123mm" % PRINTER_TICKET)	
 		elif losprod == 4:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x126mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x126mm" % PRINTER_TICKET)
 		elif losprod == 5:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x129mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x129mm" % PRINTER_TICKET)
 		elif losprod == 6:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x132mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x132mm" % PRINTER_TICKET)
 		elif losprod == 7:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x135mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x135mm" % PRINTER_TICKET)
 		elif losprod == 8:
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x138mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x138mm" % PRINTER_TICKET)
 		elif losprod == 10:
-			os.system("lp -d Brother_Tticket.pdf -o media=Custom.78x142mm")
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x142mm" % PRINTER_TICKET)
 		else: 
-			os.system("lp -d Brother_T ticket.pdf -o media=Custom.78x148mm")			
+			os.system("lp -d %s ticket.pdf -o media=Custom.78x148mm" % PRINTER_TICKET)			
 			
 	if os.path.getsize('tickettira.pdf')>2000:		
-		 os.system("lp -d Brother_T tickettira.pdf -o media=Custom.78x117mm")
+		 os.system("lp -d %s tickettira.pdf -o media=Custom.78x117mm" % PRINTER_TICKET)
 
 	print losprod	
 

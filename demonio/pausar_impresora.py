@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+import os
 
-PRINTER = "Brother_4520_1"  # Cambia por el nombre exacto de tu impresora
+PRINTER = os.environ.get('PRINTER_1', 'Brother_4520_1')
 
 try:
     result = subprocess.run(

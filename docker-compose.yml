@@ -12,6 +12,7 @@ services:
       - MONGO_URL=mongodb://mongo:27017/correos
       - ROOT_URL=http://localhost:3000
       - PORT=3000
+      - PRINTER_NAME=Brother_4520_1
     depends_on:
       mongo:
         condition: service_started
@@ -28,6 +29,10 @@ services:
       dockerfile: Dockerfile.demonio
     ports:
       - "8000:8000"
+    environment:
+      - PRINTER_1=Brother_4520_1
+      - PRINTER_2=Brother_2
+      - PRINTER_TICKET=Brother_T
     volumes:
       - ./demonio:/app
     networks:
