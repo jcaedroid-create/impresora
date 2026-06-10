@@ -1,0 +1,23 @@
+# Python 2.7 para el servidor WebSocket del demonio
+FROM python:2.7-slim-buster
+
+# Apuntar a los repositorios archivados de Buster (ya no están en los mirrors activos)
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list
+
+# Instalar CUPS client para poder usar lp, cupsenable, cupsdisable
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends cups-client && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copiar los scripts Python y recursos
+COPY demonio/ /app/
+
+# Instalar dependencias Python
+RUN pip install SimpleWebSocketServer reportlab
+
+EXPOSE 8000
+
+CMD ["python", "servidor-ws-2025-TD4520TN.py"]

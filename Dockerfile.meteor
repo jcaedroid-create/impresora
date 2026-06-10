@@ -1,0 +1,44 @@
+# =============================================================
+# Dockerfile single-stage para Meteor 1.12.1
+# Usa la imagen base que ya tiene Meteor + Node 12 + build tools
+# Evita problemas de repos archivados y ABI de fibers
+# =============================================================
+FROM geoffreybooth/meteor-base:1.12.1
+
+WORKDIR /app
+
+# [1/4] Instalar dependencias npm
+COPY correos-webapp/package.json correos-webapp/package-lock.json* ./
+RUN echo "==> [1/4] Instalando dependencias npm..." && \
+    meteor npm install --production && \
+    echo "==> OK"
+
+# [2/4] Copiar código y construir bundle
+COPY correos-webapp/ ./
+RUN echo "==> [2/4] Construyendo bundle de Meteor..." && \
+    meteor build --allow-superuser --directory /bundle && \
+    echo "==> OK"
+
+# [3/4] Instalar dependencias del bundle
+RUN echo "==> [3/4] Instalando dependencias del bundle..." && \
+    cd /bundle/bundle/programs/server && \
+    meteor npm install --allow-superuser && \
+    meteor npm install --allow-superuser @babel/runtime && \
+    echo "==> OK"
+
+# [4/4] Preparar para ejecución
+# Mover bundle al directorio de trabajo final
+RUN cp -r /bundle/bundle/* /app/ && \
+    rm -rf /bundle && \
+    echo "==> [4/4] Listo"
+
+ENV PORT=3000
+ENV ROOT_URL=http://localhost:3000
+ENV MONGO_URL=mongodb://mongo:27017/correos
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=15s --timeout=10s --start-period=60s --retries=5 \
+    CMD node -e "require('http').get('http://localhost:3000', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+
+CMD ["node", "main.js"]

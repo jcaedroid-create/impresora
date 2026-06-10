@@ -2,6 +2,28 @@
 
 Aplicación web para gestión de impresión de sellos con impresora USB, desarrollada con Meteor 1.4 y AngularJS.
 
+## Ejecución:
+
+``` bash
+docker build --no-cache --progress=plain -f Dockerfile.meteor -t correos-meteor . 2>&1 | tee build-meteor.log
+
+docker-compose up -d
+docker-compose logs -f meteor-app
+
+docker-compose down
+
+# Ejecución de Mongo
+docker-compose up -d mongo
+
+# En otra terminal ejecutamos
+cd correos-webapp
+MONGO_URL=mongodb://localhost:27017/correos meteor --allow-superuser
+
+```
+
+Cuando hagamos docker build vamos a:
+- http://localhost:3000
+
 ## Archivos cambiados
 - main.js - server/
 

@@ -1,0 +1,6 @@
+correos-webapp/.meteor/local
+correos-webapp/node_modules
+.git
+.DS_Store
+**/.DS_Store
+output/bundle/programs/server/node_modules

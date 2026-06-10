@@ -1,0 +1,52 @@
+services:
+  # ─────────────────────────────────────────────
+  # App Meteor (correos-webapp)
+  # ─────────────────────────────────────────────
+  meteor-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.meteor
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/correos
+      - ROOT_URL=http://localhost:3000
+      - PORT=3000
+    depends_on:
+      mongo:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - correos-net
+
+  # ─────────────────────────────────────────────
+  # Demonio Python (WebSocket + impresora)
+  # ─────────────────────────────────────────────
+  demonio-python:
+    build:
+      context: .
+      dockerfile: Dockerfile.demonio
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./demonio:/app
+    networks:
+      - correos-net
+
+  # ─────────────────────────────────────────────
+  # MongoDB
+  # ─────────────────────────────────────────────
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - correos-net
+
+volumes:
+  mongo-data:
+
+networks:
+  correos-net:
