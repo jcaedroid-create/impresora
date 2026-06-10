@@ -157,6 +157,14 @@ git commit -m "Resolver conflictos"
 git push origin main
 ```
 
+## TEST
+
+Test generador de pdf
+
+``` bash
+docker compose run --rm -v "$(pwd)/test:/test" demonio-python python /test/test_pdf_generation.py
+```
+
 ---
 
 ## Estructura del proyecto

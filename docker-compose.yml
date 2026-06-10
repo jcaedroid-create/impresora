@@ -12,7 +12,7 @@ services:
       - MONGO_URL=mongodb://mongo:27017/correos
       - ROOT_URL=http://localhost:3000
       - PORT=3000
-      - PRINTER_NAME=Brother_4520_1
+      - PRINTER_NAME=Canon_TS8300_USB
     depends_on:
       mongo:
         condition: service_started
@@ -30,9 +30,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - PRINTER_1=Brother_4520_1
-      - PRINTER_2=Brother_2
-      - PRINTER_TICKET=Brother_T
+      - PRINTER_1=Canon_TS8300_USB
+      - PRINTER_2=Canon_TS8300_USB
+      - PRINTER_TICKET=Canon_TS8300_USB
     volumes:
       - ./demonio:/app
     networks:

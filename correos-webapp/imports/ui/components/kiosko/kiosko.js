@@ -67,7 +67,9 @@ class Kiosko {
 
 		}
 
-		var websocket = new WebSocket("ws://169.254.128.40:8000/");
+		var wsHost = window.location.hostname || 'localhost';
+		var websocket = new WebSocket("ws://" + wsHost + ":8000/");
+		// var websocket = new WebSocket("ws://169.254.128.40:8000/");
 		// var websocket = new WebSocket("ws://127.0.0.1:8000/");
 
 

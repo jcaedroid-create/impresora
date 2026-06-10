@@ -30,7 +30,9 @@ class Maquina {
 			console.log('error: ' + evt.data + '\n');
 			websocket.close();
 		}
-		var websocket = new WebSocket("ws://169.254.128.40:8000/");
+		var wsHost = window.location.hostname || 'localhost';
+		var websocket = new WebSocket("ws://" + wsHost + ":8000/");
+		// var websocket = new WebSocket("ws://169.254.128.40:8000/");
 		websocket.onopen = function(evt) { onOpen(evt) };
 		websocket.onclose = function(evt) { onClose(evt) };
 		websocket.onmessage = function(evt) { onMessage(evt) };
