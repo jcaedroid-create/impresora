@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile.meteor
     ports:
-      - "3000:3000"
+      - "9090:3000"
     environment:
       - MONGO_URL=mongodb://mongo:27017/correos
       - ROOT_URL=http://localhost:3000
