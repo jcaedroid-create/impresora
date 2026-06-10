@@ -29,12 +29,14 @@ services:
       dockerfile: Dockerfile.demonio
     ports:
       - "8000:8000"
+      - "8001:8001"
     environment:
       - PRINTER_1=Canon_TS8300_USB
       - PRINTER_2=Canon_TS8300_USB
       - PRINTER_TICKET=Canon_TS8300_USB
     volumes:
       - ./demonio:/app
+      - /var/run/cups:/var/run/cups  # Acceso al CUPS del host para imprimir
     networks:
       - correos-net
 

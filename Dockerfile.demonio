@@ -18,6 +18,6 @@ COPY demonio/ /app/
 # Instalar dependencias Python
 RUN pip install SimpleWebSocketServer reportlab
 
-EXPOSE 8000
+EXPOSE 8000 8001
 
 CMD ["python", "-u", "servidor-ws.py"]

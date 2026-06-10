@@ -216,6 +216,56 @@ class SimpleEcho(WebSocket):
 
 
 
+# ─────────────────────────────────────────────
+# Servidor HTTP para comandos de impresora (pausar/reanudar)
+# Puerto 8001 - accesible desde el contenedor meteor-app
+# ─────────────────────────────────────────────
+import BaseHTTPServer
+import threading
+import json
+
+class PrinterCommandHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+	def do_POST(self):
+		if self.path == '/pausar':
+			result = os.system('cupsdisable -r "Pausada por el usuario" %s' % PRINTER_1)
+			if result == 0:
+				self.send_response(200)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(json.dumps({"status": "ok", "message": "Impresora pausada"}))
+			else:
+				self.send_response(500)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(json.dumps({"status": "error", "message": "Error al pausar impresora"}))
+		elif self.path == '/reanudar':
+			result = os.system('cupsenable %s' % PRINTER_1)
+			if result == 0:
+				self.send_response(200)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(json.dumps({"status": "ok", "message": "Impresora reanudada"}))
+			else:
+				self.send_response(500)
+				self.send_header('Content-Type', 'application/json')
+				self.end_headers()
+				self.wfile.write(json.dumps({"status": "error", "message": "Error al reanudar impresora"}))
+		else:
+			self.send_response(404)
+			self.end_headers()
+
+	def log_message(self, format, *args):
+		print "HTTP: " + format % args
+
+def start_http_server():
+	httpd = BaseHTTPServer.HTTPServer(('', 8001), PrinterCommandHandler)
+	print "Servidor HTTP de comandos escuchando en puerto 8001"
+	httpd.serve_forever()
+
+http_thread = threading.Thread(target=start_http_server)
+http_thread.daemon = True
+http_thread.start()
+
 server = SimpleWebSocketServer('', 8000, SimpleEcho)
 server.serveforever()
 
