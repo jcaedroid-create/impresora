@@ -20,4 +20,4 @@ RUN pip install SimpleWebSocketServer reportlab
 
 EXPOSE 8000
 
-CMD ["python", "servidor-ws-2025-TD4520TN.py"]
+CMD ["python", "-u", "servidor-ws.py"]
