@@ -36,7 +36,7 @@ def drawTitle(text, font, fontSize, y, page_width, c):
 def drawTextRight(text, font, fontSize, x, y, c):
 	c.setFont(font, fontSize)
 	text_width = stringWidth(text, font, fontSize)
-	print text
+	print(text)
 	c.drawString(x - text_width, y, text)
 
 def drawText(text, font, fontSize, x, y, c):
@@ -93,9 +93,9 @@ def drawItem(y, itemName, quantity, price, total, c):
 	drawText(itemName, "FranklinGothicCondensed", 8, 5*mm, y, c)
 	drawTextRight(quantity, "FranklinGothicCondensed", 8, 50*mm, y, c)
 
-	print price
-	print price.split('.')
-	print len(price.split('.')[1])
+	print(price)
+	print(price.split('.'))
+	print(len(price.split('.')[1]))
 	if len(price.split('.')[1])<5:
 		price = price[:-3] + '0' + '€'
 	
@@ -109,9 +109,9 @@ def drawItemCaja(y, itemName, quantity, price, total, c):
 	drawText(itemName, "FranklinGothicCondensed", 8, 5*mm, y, c)
 	drawTextRight(quantity, "FranklinGothicCondensed", 8, 50*mm, y, c)
 
-	print price
-	print price.split('.')
-	print len(price.split('.')[1])
+	print(price)
+	print(price.split('.'))
+	print(len(price.split('.')[1]))
 	if len(price.split('.')[1])<5:
 		price = price[:-3] + '0' + '€'
 	
@@ -131,12 +131,12 @@ def drawTotal(y, quantity, total, c):
 	drawTextRight(total, "FranklinGothicCondensed", 8, 73*mm, y, c)
 
 def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
-	print "Printing ticket"
+	print("Printing ticket")
 	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
 	
-	print "Fonts loaded"
+	print("Fonts loaded")
      # Añadido:
      #------------------
 	nitems = 0
@@ -218,8 +218,8 @@ def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, 
 		id_cliente = "0" + str(id_cliente)
 	elif id_cliente < 10000:
 		id_cliente = "" + str(id_cliente)	
-	print nombre_maquina
-	print id_cliente
+	print(nombre_maquina)
+	print(id_cliente)
 	#----------------- ticket TRADUCCION 3/3
 	drawTitle("" + nombre_maquina +( " - Sesión: ") + id_cliente, "FranklinGothicCondensed", 9, 20*mm, page_width, c) # ESPAÑOL
 	#drawTitle("" + nombre_maquina +( " - Session ID: ") + id_cliente, "FranklinGothicCondensed", 9, 20*mm, page_width, c) # INGLES
@@ -232,12 +232,12 @@ def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, 
 # $$$$$$$$$$$$$$$$$$$$$$$ ----------------------------------------------------------------------
 # TICKET CAJA
 def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
-	print "Printing ticket"
+	print("Printing ticket")
 	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
 	
-	print "Fonts loaded"
+	print("Fonts loaded")
      # Añadido:
      #------------------
 	nitems = 0
@@ -332,8 +332,8 @@ def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, ite
 		id_cliente = "0" + str(id_cliente)
 	elif id_cliente < 10000:
 		id_cliente = "" + str(id_cliente)	
-	print nombre_maquina
-	print id_cliente
+	print(nombre_maquina)
+	print(id_cliente)
 	#----------------- TICKET caja solo ESPAÑOL TRADUCCION 3/3
 	drawTitle("" + nombre_maquina +( " - Sesión: ") + id_cliente, "FranklinGothicBold", 7.5, 15*mm, page_width, c)
 	
@@ -347,12 +347,12 @@ def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, ite
 # $$$$$$$$$$$$$$$$$$$$$$$ -------------------------------------------------------------------$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$---
 # TICKET MASTER
 def genTicketMaster(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
-	print "Printing ticket"
+	print("Printing ticket")
 	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
 	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
 	
-	print "Fonts loaded"
+	print("Fonts loaded")
      # Añadido:
      #------------------
 	nitems = 0
@@ -433,8 +433,8 @@ def genTicketMaster(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, i
 		id_cliente = "0" + str(id_cliente)
 	elif id_cliente < 10000:
 		id_cliente = "" + str(id_cliente)	
-	print nombre_maquina
-	print id_cliente
+	print(nombre_maquina)
+	print(id_cliente)
 	#----------------- TICKET caja solo ESPAÑOL TRADUCCION 3/3
 	drawTitle("" + nombre_maquina +( " - Sesión: ") + id_cliente, "FranklinGothicCondensed", 9, 20*mm, page_width, c) # ESPAÑOL
 	
@@ -662,7 +662,7 @@ def genEtiquetasSimple(modelo1_ticket, modelo2_ticket, modelo, nombre_ticket, fe
 	etiquetas_overflow = cantidad % ETIQUETAS_POR_TICKET
 
 	# Etiquetas del ticket principal (multiplo de 5)
-	for x in xrange(0, etiquetas_principal):
+	for x in range(0, etiquetas_principal):
 		if modelo == 1:
 			genStampI(modelo1_ticket, nombre_ticket, fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), cs_principal)
 			id_producto = id_producto + 1
@@ -674,7 +674,7 @@ def genEtiquetasSimple(modelo1_ticket, modelo2_ticket, modelo, nombre_ticket, fe
 
 	# Etiquetas restantes van al ticket overflow
 	canvas_ov = cs_overflow if cs_overflow is not None else cs_principal
-	for x in xrange(0, etiquetas_overflow):
+	for x in range(0, etiquetas_overflow):
 		if modelo == 1:
 			genStampI(modelo1_ticket, nombre_ticket, fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), canvas_ov)
 			id_producto = id_producto + 1
@@ -697,7 +697,7 @@ def genEtiquetasSimpleMDCC(modelo1_ticket, modelo2_ticket, modelo, nombre_ticket
 	etiquetas_overflow = cantidad % ETIQUETAS_POR_TICKET
 
 	# Etiquetas del ticket principal (multiplo de 5)
-	for x in xrange(0, etiquetas_principal):
+	for x in range(0, etiquetas_principal):
 		if modelo == 1:
 			genStampImdcc(modelo1_ticket, nombre_ticket, fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), cs_principal)
 			id_producto = id_producto + 1
@@ -709,7 +709,7 @@ def genEtiquetasSimpleMDCC(modelo1_ticket, modelo2_ticket, modelo, nombre_ticket
 
 	# Etiquetas restantes van al ticket overflow
 	canvas_ov = cs_overflow if cs_overflow is not None else cs_principal
-	for x in xrange(0, etiquetas_overflow):
+	for x in range(0, etiquetas_overflow):
 		if modelo == 1:
 			genStampImdcc(modelo1_ticket, nombre_ticket, fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), canvas_ov)
 			id_producto = id_producto + 1
@@ -722,7 +722,7 @@ def genEtiquetasSimpleMDCC(modelo1_ticket, modelo2_ticket, modelo, nombre_ticket
 	return id_producto
 
 def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_sello, evento_sello, modo_maquina, nombre_maquina, mes_maquina, pais_maquina, year_maquina, items, productos, T1especial, T2especial, T3especial, TEmod1, TEmod2):
-	print "Printing stamps"
+	print("Printing stamps")
 	page_width = 55 * mm
 	page_height = 25 * mm
 	
@@ -796,7 +796,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 			elif productos[index]["modo"] == "T":
 				if productos[index]["idProducto"] == "tarifaAT1" or productos[index]["idProducto"] == "tarifaAT2":
 
-					for x in xrange(0,item["cantidad"]):
+					for x in range(0,item["cantidad"]):
 						if modelo==1:	
 							genStampI(modelo1_ticket, "Tarifa A", fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), ct[modelo-1])
 							id_producto = int(id_producto) + 1
@@ -826,7 +826,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 
 				elif productos[index]["idProducto"] == "tarifa4T1" or productos[index]["idProducto"] == "tarifa4T2":
 		# ANDORRA
-					for x in xrange(0,item["cantidad"]):
+					for x in range(0,item["cantidad"]):
 						if modelo==1:
 							genStampI(modelo1_ticket, "Tarifa A", fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), ct[modelo-1])
 							id_producto = int(id_producto) + 1
@@ -875,7 +875,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 				id_producto = genEtiquetasSimpleMDCC(modelo1_ticket, modelo2_ticket, modelo, productos[index]["nombre_ticket"], fecha_sello, evento_sello, modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto, item["cantidad"], cs[modelo-1][tarifa], cs_overflow[modelo-1][tarifa])
 
 #----inicio ------------- MODULO ANTERIOR
-				#for x in xrange(0,item["cantidad"]):
+				#for x in range(0,item["cantidad"]):
 				#		genStamp(productos[index]["nombre_ticket"], fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), cs[modelo-1][tarifa])
 				#		id_producto = int(id_producto) + 1
 				#		cs[modelo-1][tarifa].showPage()
@@ -883,7 +883,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 			elif productos[index]["modo"] == "T":
 				if productos[index]["idProducto"] == "tarifaAT1" or productos[index]["idProducto"] == "tarifaAT2":
 
-					for x in xrange(0,item["cantidad"]):
+					for x in range(0,item["cantidad"]):
 							genStamp("Tarifa A", fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), ct[modelo-1])
 							id_producto = int(id_producto) + 1
 							ct[modelo-1].showPage()
@@ -900,7 +900,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 
 				elif productos[index]["idProducto"] == "tarifa4T1" or productos[index]["idProducto"] == "tarifa4T2":
 # ANDORRA
-					for x in xrange(0,item["cantidad"]):
+					for x in range(0,item["cantidad"]):
 							genStamp("Tarifa A", fecha_sello, evento_sello, genCodigo(modo_maquina, mes_maquina, pais_maquina, year_maquina, nombre_maquina, id_cliente, id_producto), ct[modelo-1])
 							id_producto = int(id_producto) + 1
 							ct[modelo-1].showPage()
@@ -941,7 +941,7 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 
 			if TEmod1 == "S" or TEmod1 == "s":	
 				for x in range(vecesEspecial):
-				#	for x in xrange(0,vecesEspecial):
+				#	for x in range(0,vecesEspecial):
 					# TIRA ESPECIAL CON TARIFAS - MISMO LOGO QUE EN LA FERIA
 					
 						modelo=1
@@ -1091,8 +1091,8 @@ def printTickets(fecha_ticket, modo_ticket, modo_ticket_copia, modelo1_ticket, m
 		if items[index]["cantidad"]>0 and productos[index]["modo"] == "T" and str(nombre_maquina[0:2]) != "MD":
 			if str(nombre_maquina[0:2]) != "FI":
 				itemsColeccion[index]["cantidad"] = 1
-				for x in xrange(0,items[index]["cantidad"]):
-					print item
+				for x in range(0,items[index]["cantidad"]):
+					print(item)
 					genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, itemsColeccion, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_heighttira, page_width, ctira)
 					ctira.showPage()
 				itemsColeccion[index]["cantidad"] = 0
@@ -1102,7 +1102,7 @@ def printTickets(fecha_ticket, modo_ticket, modo_ticket_copia, modelo1_ticket, m
 # ANDORRA
 
 def afkarPrint(items, precios, id_cliente, id_producto, fecha_sello, evento_sello, fecha_ticket, modo_ticket, modo_ticket_copia, modelo1_ticket, modelo2_ticket, modo_maquina, nombre_maquina, mes_maquina, pais_maquina, year_maquina, feria, lugar, empresa, cif, cp, l1, l2, l3, T1especial, T2especial, T3especial, TEmod1, TEmod2, ImprimeCopiaTicket, ImprimeMasterTicket):
-	print "Printing"
+	print("Printing")
 	productos = [
 		{
 			"idProducto": "tarifaAS1",
@@ -1180,11 +1180,11 @@ def afkarPrint(items, precios, id_cliente, id_producto, fecha_sello, evento_sell
 	try:
 		printTickets(fecha_ticket, modo_ticket, modo_ticket_copia, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, ImprimeCopiaTicket, ImprimeMasterTicket)
 	except Exception as e:
-		print e
+		print(e)
 	try:
 		printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_sello, evento_sello, modo_maquina, nombre_maquina, mes_maquina, pais_maquina, year_maquina, items, productos, T1especial, T2especial, T3especial, TEmod1, TEmod2)
 	except Exception as e:
-		print e
+		print(e)
 	
 	
 

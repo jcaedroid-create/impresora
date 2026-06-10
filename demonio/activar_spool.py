@@ -1,10 +1,8 @@
- ## activar_spool.py
-
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import subprocess
 import os
 
 printer = os.environ.get('PRINTER_1', 'Brother_4520_1')
 
-subprocess.call(["sudo", "cupsenable", printer])
+subprocess.call(["cupsenable", printer])
 print("Spool activado")
