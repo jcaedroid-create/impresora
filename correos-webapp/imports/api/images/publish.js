@@ -1,16 +1,2 @@
-// import { Meteor } from 'meteor/meteor';
-
-// import { Config } from './collection';
-
-
-// if (Meteor.isServer) {
-// 	Meteor.publish("config", function (query) {
-// 		// console.log(query)
-// 		if (query) {
-// 			return Config.find(query.selector, query.options)
-// 		}
-// 		else{
-// 			return Config.find();
-// 		}
-// 	});
-// }
+// Images publication is handled by the jalik:ufs package automatically.
+// No custom publication needed for this collection.

@@ -1,21 +1,18 @@
 {
-  "name": "afkar",
+  "name": "correos-webapp",
   "private": true,
   "scripts": {
     "start": "meteor run"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.0",
-    "angular": "^1.5.8",
-    "angular-animate": "^1.5.8",
-    "angular-aria": "^1.5.8",
-    "angular-material": "^1.1.1",
-    "angular-meteor": "^1.3.11",
-    "angular-ui-router": "^0.3.1",
-    "babel-runtime": "^6.18.0",
+    "@babel/runtime": "^7.26.0",
     "gm": "^1.23.0",
-    "meteor-node-stubs": "~0.2.0",
-    "ng-file-upload": "^12.2.13",
-    "ng-img-crop": "^0.2.0"
+    "meteor-node-stubs": "^1.2.0",
+    "vue": "^3.4.0",
+    "vue-router": "^4.3.0",
+    "vue-meteor-tracker": "^2.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0"
   }
 }

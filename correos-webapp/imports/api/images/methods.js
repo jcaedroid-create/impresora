@@ -1,16 +1,15 @@
+import { Meteor } from 'meteor/meteor';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { ImagesStore } from './store';
 import { Images } from './collection';
 import { dataURItoBlob } from './helpers';
 
-function removeImagesWithName(name){
-  Images.remove({name: name});
+async function removeImagesWithName(name) {
+  await Images.removeAsync({ name: name });
 }
-
 
 export function upload(data, name) {
   // convert to Blob
-  
   var data = dataURItoBlob(data);
   console.log(data);
   console.log(name);
@@ -35,6 +34,7 @@ export function upload(data, name) {
     upload.start();
   });
 }
+
 Meteor.methods({
   removeImagesWithName
-})
+});

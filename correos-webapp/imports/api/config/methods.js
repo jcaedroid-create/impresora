@@ -1,9 +1,9 @@
+import { Meteor } from 'meteor/meteor';
 import { Config } from './collection';
 
-function initConfig(){
-  let initialConfiguration = {
-    ticket : {
-    //  elevento: "Plaza Mayor"
+async function initConfig() {
+  const initialConfiguration = {
+    ticket: {
       feria: "XLIX Feria Nacional Sello",
       lugar: "Plaza Mayor - Madrid",
       fecha: "auto",
@@ -31,7 +31,6 @@ function initConfig(){
       cliente: 1,
       producto: 1,
     },
-
     sello: {
       fecha: "21-24 abril 2016",
       evento: "Madrid",
@@ -39,61 +38,71 @@ function initConfig(){
       modelo2: "Buzon",
       modo: 0
     },
-
     precios: {
       tarifaA: 0.50,
       tarifaA2: 0.60,
       tarifaB: 1.25,
       tarifaC: 1.35
-      
     }
-  }
+  };
 
-  Config.remove({});
-  Config.insert(initialConfiguration);
+  await Config.removeAsync({});
+  await Config.insertAsync(initialConfiguration);
 }
 
+async function updateMaquinaConfig(config) {
+  const updatedTicket = config.ticket;
+  const updatedCodigo = config.codigo;
+  const doc = await Config.findOneAsync();
 
-
-
-function updateMaquinaConfig(config){
-  let updatedTicket = config.ticket;
-  let updatedCodigo = config.codigo;
-
-  Config.update({_id : Config.findOne()._id}, {$set : {ticket: updatedTicket, codigo: updatedCodigo}});
+  await Config.updateAsync({ _id: doc._id }, { $set: { ticket: updatedTicket, codigo: updatedCodigo } });
 }
 
-function updateImprimirConfig(config){
-  let updatedSello = config.sello;
-  let updatedPrecios = config.precios;
+async function updateImprimirConfig(config) {
+  const updatedSello = config.sello;
+  const updatedPrecios = config.precios;
+  const doc = await Config.findOneAsync();
 
-
-
-  Config.update({_id : Config.findOne()._id}, {$set : {sello: updatedSello, precios: updatedPrecios}});
-}
-function updateSesion(){
-  Config.update({_id : Config.findOne()._id}, {$inc : {"codigo.cliente": 1}});
-}
-function updateSesionerror(){
-  Config.update({_id : Config.findOne()._id}, {$inc : {"codigo.cliente": -1}});
-}
-function updateRollos(sellos1, sellos2, tickets) {
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.rollo1": sellos1*-1}});
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.rollo2": sellos2*-1}});
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.tickets": tickets*-1}});
+  await Config.updateAsync({ _id: doc._id }, { $set: { sello: updatedSello, precios: updatedPrecios } });
 }
 
-function updateRollosAnterror(rollo1ant1, rollo2ant2, ticketsant){
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.rollo1": rollo1ant1*+1}});
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.rollo2": rollo2ant2*+1}});
-  Config.update({_id : Config.findOne()._id}, {$inc : {"ticket.tickets": ticketsant*+1}});
-  }
+async function updateSesion() {
+  const doc = await Config.findOneAsync();
+  await Config.updateAsync({ _id: doc._id }, { $inc: { "codigo.cliente": 1 } });
+}
+
+async function updateSesionerror() {
+  const doc = await Config.findOneAsync();
+  await Config.updateAsync({ _id: doc._id }, { $inc: { "codigo.cliente": -1 } });
+}
+
+async function updateRollos(sellos1, sellos2, tickets) {
+  const doc = await Config.findOneAsync();
+  await Config.updateAsync({ _id: doc._id }, {
+    $inc: {
+      "ticket.rollo1": sellos1 * -1,
+      "ticket.rollo2": sellos2 * -1,
+      "ticket.tickets": tickets * -1
+    }
+  });
+}
+
+async function updateRollosAnterror(rollo1ant1, rollo2ant2, ticketsant) {
+  const doc = await Config.findOneAsync();
+  await Config.updateAsync({ _id: doc._id }, {
+    $inc: {
+      "ticket.rollo1": rollo1ant1 * +1,
+      "ticket.rollo2": rollo2ant2 * +1,
+      "ticket.tickets": ticketsant * +1
+    }
+  });
+}
 
 Meteor.methods({
   initConfig,
   updateMaquinaConfig,
   updateImprimirConfig,
- updateSesionerror,
+  updateSesionerror,
   updateSesion,
   updateRollos,
   updateRollosAnterror

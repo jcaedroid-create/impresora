@@ -225,3 +225,14 @@ docker compose run --rm -v "$(pwd)/test:/test" demonio-python python /test/test_
 - La constante `PRINTER_NAME` en `server/main.js` debe coincidir con el nombre real de la impresora (usar `lpstat -p`).
 - Los botones de Pausar/Reanudar están en la vista del kiosko (`imports/ui/components/kiosko/kiosko.html`).
 - La comunicación con la impresora de sellos se hace vía WebSocket a `ws://169.254.128.40:8000/`.
+
+## Lista de actualizaciones
+- [] - Meteor
+- [] - Node.js
+- [] - MongoDB
+- [] - Angular
+- [] - Angular Material
+- [] - Angular-ui-router
+- [] - Python
+- [] - SimpleWebSocketServer
+- [] - reportlab

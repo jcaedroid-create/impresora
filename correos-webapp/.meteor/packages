@@ -8,7 +8,6 @@ meteor-base             # Packages every Meteor app needs to have
 mobile-experience       # Packages for a great mobile UX
 mongo                   # The database Meteor supports right now
 reactive-var            # Reactive variable for tracker
-jquery                  # Helpful client-side library
 tracker                 # Meteor's client-side reactive programming library
 
 standard-minifier-css   # CSS minifier run for production mode
@@ -16,15 +15,8 @@ standard-minifier-js    # JS minifier run for production mode
 es5-shim                # ECMAScript 5 compatibility for older browsers.
 shell-server            # Server-side component of the `meteor shell` command
 
-autopublish             # Publish all data to the clients (for prototyping)
-insecure                # Allow all DB writes from clients (for prototyping)
-pbastowski:angular-babel
-urigo:static-templates
 less
-joncursi:socket-io-client
 fortawesome:fontawesome
-msavin:mongol
 jalik:ufs
 jalik:ufs-gridfs
 jalik:ufs-local
-lfergon:exportcsv

@@ -1,60 +1,52 @@
 import { Meteor } from 'meteor/meteor';
 
-const http = require('http');
-
 // URL del demonio Python (dentro de Docker, se comunican por el nombre del servicio)
 const DEMONIO_HOST = process.env.DEMONIO_HOST || 'demonio-python';
 const DEMONIO_PORT = process.env.DEMONIO_PORT || 8001;
 
-function callDemonio(path) {
-  return new Promise(function(resolve, reject) {
-    const options = {
-      hostname: DEMONIO_HOST,
-      port: DEMONIO_PORT,
-      path: path,
+async function callDemonio(path) {
+  const url = `http://${DEMONIO_HOST}:${DEMONIO_PORT}${path}`;
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      timeout: 10000
-    };
-
-    const req = http.request(options, function(res) {
-      let data = '';
-      res.on('data', function(chunk) { data += chunk; });
-      res.on('end', function() {
-        if (res.statusCode === 200) {
-          resolve(JSON.parse(data));
-        } else {
-          reject(new Error(data));
-        }
-      });
+      signal: controller.signal,
     });
 
-    req.on('error', function(e) {
-      reject(e);
-    });
+    const data = await response.text();
 
-    req.on('timeout', function() {
-      req.abort();
-      reject(new Error('Timeout al conectar con el demonio'));
-    });
+    if (!response.ok) {
+      throw new Error(data);
+    }
 
-    req.end();
-  });
+    return JSON.parse(data);
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      throw new Error('Timeout al conectar con el demonio');
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 Meteor.methods({
-  pausarImpresora() {
+  async pausarImpresora() {
     try {
-      const result = Promise.await(callDemonio('/pausar'));
+      const result = await callDemonio('/pausar');
       return result.message;
     } catch (e) {
       throw new Meteor.Error('printer-error', 'Error al pausar: ' + e.message);
     }
   },
 
-  reanudarImpresora() {
+  async reanudarImpresora() {
     try {
-      const result = Promise.await(callDemonio('/reanudar'));
+      const result = await callDemonio('/reanudar');
       return result.message;
     } catch (e) {
       throw new Meteor.Error('printer-error', 'Error al reanudar: ' + e.message);

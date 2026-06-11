@@ -5,6 +5,8 @@
 
 # FICHEROS CON MODIFICACIONES PARA TARIFAS A-B-C-D: IMPRIMIR.HTML Y KIOSKO.HTML
 
+import os
+
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -12,6 +14,29 @@ from reportlab.platypus import Image
 from reportlab.lib.units import mm
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from decimal import Decimal
+
+# ─────────────────────────────────────────────
+# Rutas base para recursos (fuentes, imágenes, PDFs de salida)
+# ─────────────────────────────────────────────
+_BASEDIR = os.path.dirname(os.path.abspath(__file__))
+FONTS_DIR = os.path.join(_BASEDIR, "fonts")
+IMAGES_DIR = os.path.join(_BASEDIR, "images")
+OUTPUT_DIR = os.path.join(_BASEDIR, "output")
+
+
+def _font(name):
+    """Devuelve la ruta completa a un archivo de fuente."""
+    return os.path.join(FONTS_DIR, name)
+
+
+def _img(name):
+    """Devuelve la ruta completa a un archivo de imagen."""
+    return os.path.join(IMAGES_DIR, name)
+
+
+def _output(name):
+    """Devuelve la ruta completa a un archivo PDF de salida."""
+    return os.path.join(OUTPUT_DIR, name)
 	
 
 def drawLogo(img, img_width, y, page_width, c):
@@ -132,9 +157,9 @@ def drawTotal(y, quantity, total, c):
 
 def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
 	print("Printing ticket")
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 	
 	print("Fonts loaded")
      # Añadido:
@@ -153,9 +178,9 @@ def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, 
 	c3 = 56 + eitems
 	c4 = 51 + eitems
 	c5 = 50 + eitems  
-	drawLogo("image2.jpg", 30*mm, c1*mm, page_width, c)                                    #110
+	drawLogo(_img("image2.jpg"), 30*mm, c1*mm, page_width, c)                                    #110
 	drawTitle(feria, "FranklinGothicBold", 12, c2*mm, page_width, c) 
-	drawfondot("fondoticketori.png", 20*mm, c5*mm - 10*mm, page_width, c)                      #125
+	drawfondot(_img("fondoticketori.png"), 20*mm, c5*mm - 10*mm, page_width, c)                      #125
 	drawTitle(lugar, "FranklinGothicBold", 10, c2*mm - 6*mm, page_width, c)                #125
 	drawTitle(empresa, "FranklinGothicBold", 7.5, c2*mm - 10*mm, page_width, c)            #125
 	drawTitle(cif, "FranklinGothicBold", 7.5, c2*mm - 14*mm, page_width, c)                #125 
@@ -233,9 +258,9 @@ def genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, 
 # TICKET CAJA
 def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
 	print("Printing ticket")
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 	
 	print("Fonts loaded")
      # Añadido:
@@ -254,7 +279,7 @@ def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, ite
 	c3 = 56 + eitems -6
 	c4 = 51 + eitems -6
 	c5 = 50 + eitems -6
-	drawLogo("image2.jpg", 30*mm, c1*mm, page_width, c) 
+	drawLogo(_img("image2.jpg"), 30*mm, c1*mm, page_width, c) 
                               #110
 	drawTitle(feria, "FranklinGothicBold", 12, c2*mm, page_width, c)  
 	#drawText("Xacobeo TIRA 4T:", "FranklinGothicBold", 12, 10*mm, c2*mm, c) 
@@ -268,7 +293,7 @@ def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, ite
 	#----------------- TICKET caja solo ESPAÑOL TRADUCCION 1/3
 	#drawTitle("Fecha", "FranklinGothicCondensed", 8, c2*mm - 22*mm, page_width, c)         #125
 	drawTitle(fecha_ticket, "FranklinGothicCondensed", 8, c2*mm - 12*mm, page_width, c)
-	drawfondot("fondoticketcop-nada.png", 20*mm, c5*mm - 10*mm, page_width, c) 
+	drawfondot(_img("fondoticketcop-nada.png"), 20*mm, c5*mm - 10*mm, page_width, c) 
 	    #125
 	drawText(modo_ticket, "FranklinGothicBold", 6.5, 5*mm, c3*mm, c)  
 	#drawText("Producto", "FranklinGothicCondensed", 8, 5*mm, c2*mm - 21*mm, c) 
@@ -348,9 +373,9 @@ def genTicketCaja(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, ite
 # TICKET MASTER
 def genTicketMaster(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c):
 	print("Printing ticket")
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 	
 	print("Fonts loaded")
      # Añadido:
@@ -369,8 +394,8 @@ def genTicketMaster(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, i
 	c3 = 56 + eitems 
 	c4 = 51 + eitems -3
 	c5 = 50 + eitems -6
-	drawLogo("image2.jpg", 30*mm, c1*mm, page_width, c) 
-	drawfondot("fondoticketcop.png", 70*mm, c1*mm - 45, page_width, c) 
+	drawLogo(_img("image2.jpg"), 30*mm, c1*mm, page_width, c) 
+	drawfondot(_img("fondoticketcop.png"), 70*mm, c1*mm - 45, page_width, c) 
                               #110
 	drawTitle(feria, "FranklinGothicBold", 12, c2*mm, page_width, c)  
 	drawTitle(lugar, "FranklinGothicBold", 10, c2*mm - 6*mm, page_width, c)                #125 
@@ -443,16 +468,16 @@ def genTicketMaster(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, i
 	drawTitle(l3, "FranklinGothicBold", 7.5, 5*mm, page_width, c)
 
 def genStamp(tarifa, fecha, evento, codigo, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
 
 	#new
-	#drawfondoeti("fondoetiqueta.png", 55*mm, -45*mm, page_width, c) # irun p  ANTES -39 VALENCIA
-	drawfondoeti("fondoetiqueta-nada.png", 55*mm, -41*mm, page_width, c)
+	#drawfondoeti(_img("fondoetiqueta.png"), 55*mm, -45*mm, page_width, c) # irun p  ANTES -39 VALENCIA
+	drawfondoeti(_img("fondoetiqueta-nada.png"), 55*mm, -41*mm, page_width, c)
 	#drawText("Filatelia", "FranklinGothic", 12, 1.5*mm, 19.5*mm, c) 
 
 	#original: drawText(tarifa, "FranklinGothic", 12, 1.5*mm, 19.5*mm, c)
@@ -463,19 +488,19 @@ def genStamp(tarifa, fecha, evento, codigo, c):
 
 
 def genStampI(mod1, tarifa, fecha, evento, codigo, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
 
 	#new
-	#drawfondoeti("fondoetiqueta.png", 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
-	#drawfondoeti("fondoetiqueta1.png", 55*mm, -38*mm, page_width, c)
+	#drawfondoeti(_img("fondoetiqueta.png"), 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
+	#drawfondoeti(_img("fondoetiqueta1.png"), 55*mm, -38*mm, page_width, c)
 
 	#drawText("Filatelia", "FranklinGothic", 12, 1.5*mm, 19.5*mm, c) 
-	drawfondoeti(mod1 + ".png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img(mod1 + ".png"), 55*mm, -38*mm, page_width, c)
 		#original
 	#drawText(tarifa, "FranklinGothic", 12, 2*mm, 19.5*mm, c)
 	#drawText(fecha, "FranklinGothic", 9, 2*mm, 14*mm-3*mm, c)
@@ -489,22 +514,22 @@ def genStampI(mod1, tarifa, fecha, evento, codigo, c):
 	drawText(codigo, "FranklinGothic", 6, 2*mm, 15*mm, c)
 
 def genStampD(mod2, tarifa, fecha, evento, codigo, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	#drawfondoeti("fondoetiqueta2.png", 55*mm, -38*mm, page_width, c)
+	#drawfondoeti(_img("fondoetiqueta2.png"), 55*mm, -38*mm, page_width, c)
 
 	#new
-	drawfondoeti(mod2 + ".png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img(mod2 + ".png"), 55*mm, -38*mm, page_width, c)
 	# NO FUNCIONA: drawfondoeti(str(modelo2_ticket + '.png'), 55*mm, -38*mm, page_width, c)
 	# NO FUNCIONA: mod2 = '"' + str(modelo2_ticket) + '.png' + '"'
 	#mod2 = "fondoetiqueta2.png"
 	#drawfondoeti(mod2, 55*mm, -38*mm, page_width, c)
 
-	#drawfondoeti("fondoetiqueta.png", 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
+	#drawfondoeti(_img("fondoetiqueta.png"), 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
 	
 	# NO FUNCIONA: drawfondoeti(('"'+modelo2_ticket+'.png"'), 55*mm, -38*mm, page_width, c)
 	
@@ -523,19 +548,19 @@ def genStampD(mod2, tarifa, fecha, evento, codigo, c):
 	drawText(codigo, "FranklinGothic", 6, 2*mm, 15*mm, c)
 
 def genStampImdcc(mod1, tarifa, fecha, evento, codigo, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
 
 	#new
-	#drawfondoeti("fondoetiqueta.png", 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
-	#drawfondoeti("fondoetiqueta1.png", 55*mm, -38*mm, page_width, c)
+	#drawfondoeti(_img("fondoetiqueta.png"), 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
+	#drawfondoeti(_img("fondoetiqueta1.png"), 55*mm, -38*mm, page_width, c)
 
 	#drawText("Filatelia", "FranklinGothic", 12, 1.5*mm, 19.5*mm, c) 
-	drawfondoeti("fondoetiqueta-nada.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("fondoetiqueta-nada.png"), 55*mm, -38*mm, page_width, c)
 		#original
 	#drawText(tarifa, "FranklinGothic", 12, 2*mm, 19.5*mm, c)
 	#drawText(fecha, "FranklinGothic", 9, 2*mm, 14*mm-3*mm, c)
@@ -549,22 +574,22 @@ def genStampImdcc(mod1, tarifa, fecha, evento, codigo, c):
 	drawText(codigo, "FranklinGothic", 6, 2*mm, 15*mm, c)
 
 def genStampDmdcc(mod2, tarifa, fecha, evento, codigo, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	#drawfondoeti("fondoetiqueta2.png", 55*mm, -38*mm, page_width, c)
+	#drawfondoeti(_img("fondoetiqueta2.png"), 55*mm, -38*mm, page_width, c)
 
 	#new
-	drawfondoeti("fondoetiqueta-nada.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("fondoetiqueta-nada.png"), 55*mm, -38*mm, page_width, c)
 	# NO FUNCIONA: drawfondoeti(str(modelo2_ticket + '.png'), 55*mm, -38*mm, page_width, c)
 	# NO FUNCIONA: mod2 = '"' + str(modelo2_ticket) + '.png' + '"'
 	#mod2 = "fondoetiqueta2.png"
 	#drawfondoeti(mod2, 55*mm, -38*mm, page_width, c)
 
-	#drawfondoeti("fondoetiqueta.png", 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
+	#drawfondoeti(_img("fondoetiqueta.png"), 55*mm, -45*mm, page_width, c) # irun -39 (VALENCIA -41) PM 2022 -38
 	
 	# NO FUNCIONA: drawfondoeti(('"'+modelo2_ticket+'.png"'), 55*mm, -38*mm, page_width, c)
 	
@@ -582,26 +607,26 @@ def genStampDmdcc(mod2, tarifa, fecha, evento, codigo, c):
 	drawTextRight(fecha, "FranklinGothic", 9, 53*mm, 15*mm, c)
 	drawText(codigo, "FranklinGothic", 6, 2*mm, 15*mm, c)	
 def genStampE1(codigo, esp, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	drawfondoeti("TiraEspecial1.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("TiraEspecial1.png"), 55*mm, -38*mm, page_width, c)
 	drawText(codigo, "FranklinGothic", 6, 1.5*mm, 12*mm-10*mm, c)
 	drawText(esp, "FranklinGothic", 6, 23.3*mm, 12*mm-10*mm, c)
 
 #def genStampE2(tarifa, fecha, evento, codigo, esp, c):	
 
 def genStampE2(tarifa, codigo, esp, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	drawfondoeti("TiraEspecial2.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("TiraEspecial2.png"), 55*mm, -38*mm, page_width, c)
 	drawText(tarifa, "FranklinGothic", 12, 1.5*mm, 19.5*mm, c)
 	#drawText(fecha, "FranklinGothic", 9, 1.5*mm, 14*mm-3*mm, c)
 	#drawText(evento, "FranklinGothic", 9, 1.5*mm, 14*mm-7*mm, c)
@@ -609,13 +634,13 @@ def genStampE2(tarifa, codigo, esp, c):
 	drawText(esp, "FranklinGothic", 6, 23.3*mm, 12*mm-10*mm, c)
 
 def genStampE3(tarifa, codigo, esp, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	drawfondoeti("TiraEspecial3.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("TiraEspecial3.png"), 55*mm, -38*mm, page_width, c)
 	drawText(tarifa, "FranklinGothic", 12, 1.5*mm, 19.5*mm, c)
 	#drawText(fecha, "FranklinGothic", 9, 1.5*mm, 14*mm-3*mm, c)
 	#drawText(evento, "FranklinGothic", 9, 1.5*mm, 14*mm-7*mm, c)
@@ -623,13 +648,13 @@ def genStampE3(tarifa, codigo, esp, c):
 	drawText(esp, "FranklinGothic", 6, 23.3*mm, 12*mm-10*mm, c)
 
 def genStampE4(codigo, esp, c):
-	pdfmetrics.registerFont(TTFont('FranklinGothic', 'franklin_gothic.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicBold', 'franklin_gothic_bold.ttf'))
-	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', 'franklin_gothic_condensed.ttf'))
+	pdfmetrics.registerFont(TTFont('FranklinGothic', _font('franklin_gothic.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicBold', _font('franklin_gothic_bold.ttf')))
+	pdfmetrics.registerFont(TTFont('FranklinGothicCondensed', _font('franklin_gothic_condensed.ttf')))
 
 	page_width = 55 * mm
 	page_height = 25 * mm
-	drawfondoeti("TiraEspecial4.png", 55*mm, -38*mm, page_width, c)
+	drawfondoeti(_img("TiraEspecial4.png"), 55*mm, -38*mm, page_width, c)
 	drawText(codigo, "FranklinGothic", 6, 1.5*mm, 12*mm-10*mm, c)
 	drawText(esp, "FranklinGothic", 6, 23.3*mm, 12*mm-10*mm, c)		
 	
@@ -726,33 +751,33 @@ def printStamps(modelo1_ticket, modelo2_ticket, id_cliente, id_producto, fecha_s
 	page_width = 55 * mm
 	page_height = 25 * mm
 	
-	cs1a = canvas.Canvas("stamp_simple_1_a.pdf", pagesize=(page_width, page_height))
-	cs1a2 = canvas.Canvas("stamp_simple_1_a2.pdf", pagesize=(page_width, page_height))
-	cs1b = canvas.Canvas("stamp_simple_1_b.pdf", pagesize=(page_width, page_height))
-	cs1c = canvas.Canvas("stamp_simple_1_c.pdf", pagesize=(page_width, page_height))
-	ct1 = canvas.Canvas("stamp_tira_1.pdf", pagesize=(page_width, page_height))
-	cte1 = canvas.Canvas("stamp_tira_1_especial.pdf", pagesize=(page_width, page_height))
+	cs1a = canvas.Canvas(_output("stamp_simple_1_a.pdf"), pagesize=(page_width, page_height))
+	cs1a2 = canvas.Canvas(_output("stamp_simple_1_a2.pdf"), pagesize=(page_width, page_height))
+	cs1b = canvas.Canvas(_output("stamp_simple_1_b.pdf"), pagesize=(page_width, page_height))
+	cs1c = canvas.Canvas(_output("stamp_simple_1_c.pdf"), pagesize=(page_width, page_height))
+	ct1 = canvas.Canvas(_output("stamp_tira_1.pdf"), pagesize=(page_width, page_height))
+	cte1 = canvas.Canvas(_output("stamp_tira_1_especial.pdf"), pagesize=(page_width, page_height))
 	
-	cs2a = canvas.Canvas("stamp_simple_2_a.pdf", pagesize=(page_width, page_height))
-	cs2a2 = canvas.Canvas("stamp_simple_2_a2.pdf", pagesize=(page_width, page_height))
-	cs2b = canvas.Canvas("stamp_simple_2_b.pdf", pagesize=(page_width, page_height))
-	cs2c = canvas.Canvas("stamp_simple_2_c.pdf", pagesize=(page_width, page_height))
-	ct2 = canvas.Canvas("stamp_tira_2.pdf", pagesize=(page_width, page_height))
-	cte2 = canvas.Canvas("stamp_tira_2_especial.pdf", pagesize=(page_width, page_height))
+	cs2a = canvas.Canvas(_output("stamp_simple_2_a.pdf"), pagesize=(page_width, page_height))
+	cs2a2 = canvas.Canvas(_output("stamp_simple_2_a2.pdf"), pagesize=(page_width, page_height))
+	cs2b = canvas.Canvas(_output("stamp_simple_2_b.pdf"), pagesize=(page_width, page_height))
+	cs2c = canvas.Canvas(_output("stamp_simple_2_c.pdf"), pagesize=(page_width, page_height))
+	ct2 = canvas.Canvas(_output("stamp_tira_2.pdf"), pagesize=(page_width, page_height))
+	cte2 = canvas.Canvas(_output("stamp_tira_2_especial.pdf"), pagesize=(page_width, page_height))
 
 	cs = [[cs1a, cs1a2, cs1b, cs1c], [cs2a, cs2a2, cs2b, cs2c]]
 	ct = [ct1, ct2]
 	cte = [cte1, cte2]
 
 	# Canvas overflow para etiquetas restantes (segundo PDF)
-	cs1a_ov = canvas.Canvas("stamp_simple_1_a_overflow.pdf", pagesize=(page_width, page_height))
-	cs1a2_ov = canvas.Canvas("stamp_simple_1_a2_overflow.pdf", pagesize=(page_width, page_height))
-	cs1b_ov = canvas.Canvas("stamp_simple_1_b_overflow.pdf", pagesize=(page_width, page_height))
-	cs1c_ov = canvas.Canvas("stamp_simple_1_c_overflow.pdf", pagesize=(page_width, page_height))
-	cs2a_ov = canvas.Canvas("stamp_simple_2_a_overflow.pdf", pagesize=(page_width, page_height))
-	cs2a2_ov = canvas.Canvas("stamp_simple_2_a2_overflow.pdf", pagesize=(page_width, page_height))
-	cs2b_ov = canvas.Canvas("stamp_simple_2_b_overflow.pdf", pagesize=(page_width, page_height))
-	cs2c_ov = canvas.Canvas("stamp_simple_2_c_overflow.pdf", pagesize=(page_width, page_height))
+	cs1a_ov = canvas.Canvas(_output("stamp_simple_1_a_overflow.pdf"), pagesize=(page_width, page_height))
+	cs1a2_ov = canvas.Canvas(_output("stamp_simple_1_a2_overflow.pdf"), pagesize=(page_width, page_height))
+	cs1b_ov = canvas.Canvas(_output("stamp_simple_1_b_overflow.pdf"), pagesize=(page_width, page_height))
+	cs1c_ov = canvas.Canvas(_output("stamp_simple_1_c_overflow.pdf"), pagesize=(page_width, page_height))
+	cs2a_ov = canvas.Canvas(_output("stamp_simple_2_a_overflow.pdf"), pagesize=(page_width, page_height))
+	cs2a2_ov = canvas.Canvas(_output("stamp_simple_2_a2_overflow.pdf"), pagesize=(page_width, page_height))
+	cs2b_ov = canvas.Canvas(_output("stamp_simple_2_b_overflow.pdf"), pagesize=(page_width, page_height))
+	cs2c_ov = canvas.Canvas(_output("stamp_simple_2_c_overflow.pdf"), pagesize=(page_width, page_height))
 
 	cs_overflow = [[cs1a_ov, cs1a2_ov, cs1b_ov, cs1c_ov], [cs2a_ov, cs2a2_ov, cs2b_ov, cs2c_ov]]
 	
@@ -1057,8 +1082,8 @@ def printTickets(fecha_ticket, modo_ticket, modo_ticket_copia, modelo1_ticket, m
 	page_height = (126+eitems) * mm
 	page_heighttira = 115 * mm
 	# ------------------ page_height = 165 * mm con LINEA QUITADA 148
-	c = canvas.Canvas("ticket.pdf", pagesize=(page_width, page_height))
-	ctira = canvas.Canvas("tickettira.pdf", pagesize=(page_width, page_heighttira))
+	c = canvas.Canvas(_output("ticket.pdf"), pagesize=(page_width, page_height))
+	ctira = canvas.Canvas(_output("tickettira.pdf"), pagesize=(page_width, page_heighttira))
 
 	genTicket(fecha_ticket, modo_ticket, modelo1_ticket, modelo2_ticket, items, id_cliente, nombre_maquina, productos, feria, lugar, empresa, cif, cp, l1, l2, l3, page_height, page_width, c)
 	c.showPage()
