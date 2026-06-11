@@ -10,7 +10,7 @@ services:
       - "9090:3000"
     environment:
       - MONGO_URL=mongodb://mongo:27017/correos
-      - ROOT_URL=http://localhost:3000
+      - ROOT_URL=http://localhost:9090
       - PORT=3000
       - PRINTER_NAME=Canon_TS8300_USB
     depends_on:

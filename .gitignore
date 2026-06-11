@@ -1,0 +1,39 @@
+# IDE / Editor
+.vscode/
+.idea/
+
+# Kiro
+.kiro/
+
+# Hypothesis (PBT cache)
+.hypothesis/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Meteor local
+correos-webapp/.meteor/local/
+
+# Build logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PDFs generados (output del demonio)
+demonio/output/*.pdf
+demonio/*.pdf
+
+# Docker
+docker-compose.override.yml

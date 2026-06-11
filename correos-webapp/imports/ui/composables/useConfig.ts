@@ -1,7 +1,6 @@
-import { ref, computed } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { Meteor } from 'meteor/meteor'
-// @ts-ignore – vue-meteor-tracker does not ship types
-import { useTracker } from 'vue-meteor-tracker'
+import { Tracker } from 'meteor/tracker'
 import { Config } from '../../api/config/collection'
 
 export interface ConfigDocument {
@@ -80,22 +79,26 @@ export interface UseConfig {
 }
 
 /**
- * Composable for reactive access to the `config` collection via Meteor's
- * tracker integration. Replaces the AngularJS `$reactive` helpers pattern.
+ * Composable for reactive access to the `config` collection.
+ * Uses Meteor's Tracker.autorun directly for reactivity.
  */
 export function useConfig(): UseConfig {
   const isReady = ref(false)
+  const config = ref<ConfigDocument | null>(null)
 
-  // Subscribe to config publication and reactively track the document
-  const config = useTracker(() => {
+  // Subscribe and reactively track config document
+  const computation = Tracker.autorun(() => {
     const handle = Meteor.subscribe('config')
     isReady.value = handle.ready()
 
-    if (!handle.ready()) {
-      return null
+    if (handle.ready()) {
+      config.value = (Config.findOne() as ConfigDocument | undefined) ?? null
     }
+  })
 
-    return Config.findOne() as ConfigDocument | null
+  // Cleanup on component unmount
+  onUnmounted(() => {
+    computation.stop()
   })
 
   async function updateMaquina(configData: Partial<ConfigDocument>): Promise<void> {

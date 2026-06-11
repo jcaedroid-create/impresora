@@ -237,7 +237,7 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Eliminar archivos `.less` (reemplazados por Tailwind)
     - _Requisitos: 8.2_
 
-- [-] 8. Checkpoint Final — Migración completa
+- [x] 8. Checkpoint Final — Migración completa
   - Asegurar que todos los tests pasan, preguntar al usuario si surgen dudas.
   - Crear tag de Git: `git tag v1.0-migracion-completa`
   - Verificar que `docker-compose up` arranca el sistema completo con el nuevo stack

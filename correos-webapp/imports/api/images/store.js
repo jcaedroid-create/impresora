@@ -1,18 +1,5 @@
-import { UploadFS } from 'meteor/jalik:ufs';
-import { Images } from './collection';
- 
-export const ImagesStore = new UploadFS.store.GridFS({
-  collection: Images,
-  name: 'images',
-  permissions: new UploadFS.StorePermissions({
-        insert: function () {
-            return true;
-        },
-        update: function () {
-            return true;
-        },
-        remove: function () {
-            return true;
-        }
-    })
-});
+// Store module - jalik:ufs has been removed (discontinued, incompatible with Meteor 3).
+// Images are now stored as base64 data URIs directly in the Images collection.
+// No external store is needed for this use case (only 2 small stamp images).
+
+export const ImagesStore = null;
