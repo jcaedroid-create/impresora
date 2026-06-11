@@ -4,13 +4,13 @@
 Servidor HTTP modernizado usando aiohttp (asyncio).
 
 Proporciona endpoints para controlar la impresora:
-  - POST /pausar  → Ejecuta cupsdisable para pausar la impresora
-  - POST /reanudar → Ejecuta cupsenable para reanudar la impresora
+  - POST /pausar     → Pausa la impresora
+  - POST /reanudar   → Reanuda la impresora
+  - GET  /printers   → Descubre impresoras disponibles en la red
+  - GET  /status     → Estado del servicio y backend activo
 
 Se integra con el event loop de asyncio del servidor WebSocket principal.
 Puerto por defecto: 8001
-
-Requisitos: 4.4, 4.5
 """
 
 import asyncio
@@ -19,26 +19,30 @@ import os
 
 from aiohttp import web
 
+from printer_backend import get_printer_backend, PrinterBackend
+
 logger = logging.getLogger(__name__)
 
-# Nombre de la impresora (configurable via variable de entorno)
-PRINTER_1 = os.environ.get("PRINTER_1", "Brother_4520_1")
+# Nombre/URI de la impresora principal (configurable via variable de entorno)
+PRINTER_1 = os.environ.get("PRINTER_1", "Canon_TS8300")
 
 
 class ServidorHTTP:
     """
     Servidor HTTP asyncio para comandos de control de impresora.
 
-    Ejecuta comandos CUPS (cupsdisable, cupsenable) usando
-    asyncio.create_subprocess_exec() para no bloquear el event loop.
+    Usa el backend de impresión abstracto (CUPS o IPP) para las operaciones.
     """
 
     def __init__(self, host: str = "", port: int = 8001):
         self.host = host
         self.port = port
+        self.backend: PrinterBackend = get_printer_backend()
         self._app = web.Application()
         self._app.router.add_post("/pausar", self._handle_pausar)
         self._app.router.add_post("/reanudar", self._handle_reanudar)
+        self._app.router.add_get("/printers", self._handle_discover)
+        self._app.router.add_get("/status", self._handle_status)
         self._runner: web.AppRunner | None = None
 
     async def iniciar(self) -> None:
@@ -60,80 +64,12 @@ class ServidorHTTP:
             logger.info("Servidor HTTP detenido")
 
     async def pausar(self) -> dict:
-        """
-        Pausa la impresora ejecutando cupsdisable.
-
-        Returns:
-            dict con "status" ("ok" o "error") y "message".
-        """
-        return await self._ejecutar_comando_cups(
-            ["cupsdisable", "-r", "Pausada por el usuario", PRINTER_1],
-            mensaje_ok="Impresora pausada",
-            mensaje_error="Error al pausar impresora",
-        )
+        """Pausa la impresora usando el backend configurado."""
+        return await self.backend.pause_printer(PRINTER_1)
 
     async def reanudar(self) -> dict:
-        """
-        Reanuda la impresora ejecutando cupsenable.
-
-        Returns:
-            dict con "status" ("ok" o "error") y "message".
-        """
-        return await self._ejecutar_comando_cups(
-            ["cupsenable", PRINTER_1],
-            mensaje_ok="Impresora reanudada",
-            mensaje_error="Error al reanudar impresora",
-        )
-
-    async def _ejecutar_comando_cups(
-        self,
-        comando: list[str],
-        mensaje_ok: str,
-        mensaje_error: str,
-    ) -> dict:
-        """
-        Ejecuta un comando CUPS usando asyncio.create_subprocess_exec().
-
-        Args:
-            comando: Lista con el comando y argumentos.
-            mensaje_ok: Mensaje a devolver si el comando tiene éxito.
-            mensaje_error: Mensaje a devolver si el comando falla.
-
-        Returns:
-            dict con "status" y "message".
-        """
-        try:
-            process = await asyncio.create_subprocess_exec(
-                *comando,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-            )
-            stdout, stderr = await asyncio.wait_for(
-                process.communicate(), timeout=10.0
-            )
-
-            if process.returncode == 0:
-                logger.info("%s (comando: %s)", mensaje_ok, " ".join(comando))
-                return {"status": "ok", "message": mensaje_ok}
-            else:
-                error_detail = stderr.decode().strip() if stderr else "código de retorno no-cero"
-                logger.error(
-                    "%s: %s (comando: %s)",
-                    mensaje_error,
-                    error_detail,
-                    " ".join(comando),
-                )
-                return {"status": "error", "message": f"{mensaje_error}: {error_detail}"}
-
-        except asyncio.TimeoutError:
-            logger.error("Timeout ejecutando comando: %s", " ".join(comando))
-            return {"status": "error", "message": f"{mensaje_error}: timeout"}
-        except FileNotFoundError:
-            logger.error("Comando no encontrado: %s", comando[0])
-            return {"status": "error", "message": f"{mensaje_error}: comando '{comando[0]}' no encontrado"}
-        except Exception as e:
-            logger.error("Error inesperado ejecutando %s: %s", " ".join(comando), e)
-            return {"status": "error", "message": f"{mensaje_error}: {e}"}
+        """Reanuda la impresora usando el backend configurado."""
+        return await self.backend.resume_printer(PRINTER_1)
 
     async def _handle_pausar(self, request: web.Request) -> web.Response:
         """Handler HTTP para POST /pausar."""
@@ -146,3 +82,37 @@ class ServidorHTTP:
         result = await self.reanudar()
         status_code = 200 if result["status"] == "ok" else 500
         return web.json_response(result, status=status_code)
+
+    async def _handle_discover(self, request: web.Request) -> web.Response:
+        """
+        Handler HTTP para GET /printers.
+        Descubre impresoras disponibles en la red.
+
+        Response: {"printers": [{"name": "...", "uri": "...", "model": "...", "status": "..."}]}
+        """
+        try:
+            printers = await self.backend.discover_printers()
+            return web.json_response({
+                "status": "ok",
+                "printers": printers,
+                "backend": self.backend.__class__.__name__,
+            })
+        except Exception as e:
+            logger.error("Error discovering printers: %s", e)
+            return web.json_response(
+                {"status": "error", "message": str(e), "printers": []},
+                status=500,
+            )
+
+    async def _handle_status(self, request: web.Request) -> web.Response:
+        """
+        Handler HTTP para GET /status.
+        Devuelve información del servicio.
+        """
+        return web.json_response({
+            "status": "ok",
+            "backend": self.backend.__class__.__name__,
+            "printer_1": os.environ.get("PRINTER_1", "not configured"),
+            "printer_2": os.environ.get("PRINTER_2", "not configured"),
+            "printer_ticket": os.environ.get("PRINTER_TICKET", "not configured"),
+        })

@@ -36,19 +36,19 @@
     <!-- EVENTO -->
     <section class="mb-6">
       <div class="bg-amber-400 p-2 mb-2 rounded shadow">
-        <h3 class="text-black font-bold m-0">EVENTO: {{ bloqueado }}</h3>
+        <h3 class="text-black font-bold m-0">EVENTO: {{ bloqueado === 'BLOQUEADO' ? 'BLOQUEADO' : 'DESBLOQUEADO' }}</h3>
       </div>
 
       <div class="flex flex-col items-center gap-4 p-4">
         <!-- Event selector -->
-        <div v-if="bloqueado === 'DESBLOQUEADO'">
+        <div v-if="bloqueado !== 'BLOQUEADO'">
           <label class="block text-red-600 font-bold mb-1">EVENTO</label>
           <select
             v-model="elevento"
             class="w-[250px] text-red-600 text-lg border border-gray-300 rounded p-2"
           >
             <option v-for="i in 8" :key="i - 1" :value="i - 1">
-              {{ eventos[i - 1]?.nevento }}
+              {{ eventos[i - 1]?.nevento || ('Evento ' + i) }}
             </option>
           </select>
           <button
@@ -66,7 +66,7 @@
             class="w-[250px] text-red-600 text-lg border border-gray-300 rounded p-2 opacity-60"
           >
             <option v-for="i in 8" :key="i - 1" :value="i - 1">
-              {{ eventos[i - 1]?.nevento }}
+              {{ eventos[i - 1]?.nevento || ('Evento ' + i) }}
             </option>
           </select>
         </div>
@@ -123,7 +123,7 @@
         </label>
         <label v-for="i in 8" :key="i - 1" class="inline-flex items-center gap-1">
           <input v-model="editingEvent" type="radio" :value="i - 1">
-          <span class="text-sm">{{ eventos[i - 1]?.nevento }}</span>
+          <span class="text-sm">{{ eventos[i - 1]?.nevento || ('Evento ' + i) }}</span>
         </label>
       </div>
 
@@ -403,6 +403,21 @@ watch(elevento, () => {
   updateCurrentEventDisplay()
 })
 
+// Also update display when the active event's data changes
+watch(
+  () => {
+    const idx = elevento.value
+    if (idx >= 0 && idx < 8) {
+      const ev = eventos[idx]
+      return `${ev.motivoi}|${ev.motivod}|${ev.nferia}|${ev.nlugar}|${ev.fecha}|${ev.localidad}`
+    }
+    return ''
+  },
+  () => {
+    updateCurrentEventDisplay()
+  }
+)
+
 function updateCurrentEventDisplay() {
   const idx = elevento.value
   if (idx >= 0 && idx < 8) {
@@ -423,7 +438,7 @@ function updateCurrentEventDisplay() {
 async function guardar() {
   // Determine elnperfil and PERFILlimiteImporte based on elperfil
   let elnperfil = ''
-  let PERFILlimiteImporte = 0
+  let PERFILlimiteImporte: number | string = 0
 
   const perfilNames: Record<number, string> = {
     1: nperfil1.value,
@@ -441,20 +456,29 @@ async function guardar() {
       : (config.value.ticket.NUEVOlimiteImporte ?? 0)
   }
 
+  // Derive top-level sello fields from the currently active event
+  const activeEvent = eventos[elevento.value]
+  const activeModelo1 = activeEvent?.motivoi ?? ''
+  const activeModelo2 = activeEvent?.motivod ?? ''
+  const activeFecha = activeEvent?.fecha ?? ''
+  const activeLocalidad = activeEvent?.localidad ?? ''
+  const activeFeria = activeEvent?.nferia ?? ''
+  const activeLugar = activeEvent?.nlugar ?? ''
+
   const updatedConfig = {
     sello: {
       PERFILlimiteImporte,
-      nombreModelo1: nombreModelo1.value,
-      nombreModelo2: nombreModelo2.value,
-      evento: eventoLocalidad.value,
-      fecha: fechaInstalacion.value,
-      modelo1: nombreModelo1.value,
-      modelo2: nombreModelo2.value,
+      nombreModelo1: activeModelo1,
+      nombreModelo2: activeModelo2,
+      evento: activeLocalidad,
+      fecha: activeFecha,
+      modelo1: activeModelo1,
+      modelo2: activeModelo2,
       modo: config.value?.sello.modo ?? 0,
       elevento: elevento.value,
-      elnevento: eventos[elevento.value]?.nevento ?? '',
-      feria: currentFeria.value,
-      lugar: currentLugar.value,
+      elnevento: activeEvent?.nevento ?? '',
+      feria: activeFeria,
+      lugar: activeLugar,
       elperfil: elperfil.value,
       elnperfil,
       nperfil1: nperfil1.value,
@@ -463,8 +487,8 @@ async function guardar() {
       nperfil4: nperfil4.value,
       nperfil5: nperfil5.value,
       nperfil6: nperfil6.value,
-      elnmodelo1: nombreModelo1.value,
-      elnmodelo2: nombreModelo2.value,
+      elnmodelo1: activeModelo1,
+      elnmodelo2: activeModelo2,
       // Spread all events data
       ...buildEventsPayload(),
     },
@@ -480,7 +504,7 @@ async function guardar() {
 
   try {
     await updateImprimir(updatedConfig)
-    router.push('/imprimir')
+    router.push('/home')
   } catch (error) {
     console.error('Error al guardar configuración:', error)
   }

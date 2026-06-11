@@ -611,8 +611,9 @@ watch(config, (cfg) => {
   // Sello display fields
   feria.value = cfg.sello.feria ?? ''
   lugar.value = cfg.sello.lugar ?? ''
-  nombreModelo1.value = (cfg.sello as any).elnmodelo1 ?? ''
-  nombreModelo2.value = (cfg.sello as any).elnmodelo2 ?? ''
+  const evIdx = cfg.sello.elevento ?? 0
+  nombreModelo1.value = cfg.sello[`motivoi${evIdx}`] ?? (cfg.sello as any).elnmodelo1 ?? ''
+  nombreModelo2.value = cfg.sello[`motivod${evIdx}`] ?? (cfg.sello as any).elnmodelo2 ?? ''
   elnperfil.value = cfg.sello.elnperfil ?? ''
 
   // Display mes

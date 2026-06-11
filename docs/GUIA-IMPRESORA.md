@@ -418,3 +418,40 @@ Asegúrate de que Python está en el PATH. Durante la instalación de Python 2.7
 ```powershell
 C:\Python27\python.exe servidor-ws.py
 ```
+## Guia definitiva windows
+
+Pasos para Windows con la Canon TS8300 WiFi
+1. Encontrar la IP de tu impresora
+En tu Canon TS8300, ve a:
+
+Configuración → Configuración de LAN → LAN inalámbrica → Confirmar config. red
+Ahí verás la IP asignada (por ejemplo 192.168.1.50)
+Alternativa: desde cmd de Windows:
+
+ping Canon_TS8300.local
+2. Configurar el proyecto
+Crea un archivo .env en la raíz del proyecto:
+
+PRINTER_BACKEND=ipp
+PRINTER_1=192.168.1.50
+PRINTER_2=192.168.1.50
+PRINTER_TICKET=192.168.1.50
+(Reemplaza 192.168.1.50 con la IP real de tu Canon)
+
+3. Preparar Docker para Windows
+En Windows, el volumen /var/run/cups no existe. Renombra o copia el override:
+
+copy docker-compose.override.windows.yml docker-compose.override.yml
+4. Arrancar
+docker compose up -d
+5. Verificar conexión con la impresora
+/#/ Ver estado del servicio
+curl http://localhost:8001/status
+
+/#/ Descubrir impresoras en la red
+curl http://localhost:8001/printers
+6. Probar impresión
+Accede a http://localhost:9090, ve al Kiosko, selecciona cantidades y pulsa el carrito. El sistema:
+
+Genera los PDFs (sellos + ticket)
+Los envía directamente a la Canon via IPP (protocolo HTTP al puerto 631 de la impresora)

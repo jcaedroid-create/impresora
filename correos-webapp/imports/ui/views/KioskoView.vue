@@ -360,8 +360,16 @@ const T3especial = computed(() => config.value?.ticket?.T3especial ?? '')
 const ImprimeCopiaTicket = computed(() => config.value?.ticket?.ImprimeCopiaTicket ?? '')
 const ImprimeMasterTicket = computed(() => config.value?.ticket?.ImprimeMasterTicket ?? '')
 
-const nombreModelo1 = computed(() => config.value?.sello?.nombreModelo1 ?? '')
-const nombreModelo2 = computed(() => config.value?.sello?.nombreModelo2 ?? '')
+const nombreModelo1 = computed(() => {
+  if (!config.value) return ''
+  const idx = config.value.sello.elevento ?? 0
+  return config.value.sello[`motivoi${idx}`] ?? config.value.sello?.nombreModelo1 ?? ''
+})
+const nombreModelo2 = computed(() => {
+  if (!config.value) return ''
+  const idx = config.value.sello.elevento ?? 0
+  return config.value.sello[`motivod${idx}`] ?? config.value.sello?.nombreModelo2 ?? ''
+})
 
 const nombre = computed(() => config.value?.codigo?.maquina ?? '')
 const modocod = computed(() => config.value?.codigo?.modo ?? '')
@@ -419,8 +427,9 @@ const elmodo = computed(() => {
 const limite = computed(() => {
   if (!config.value) return 0
   const perfil = config.value.sello.elperfil
-  if (perfil === 6) return config.value.ticket.limiteImporte ?? 0
-  return config.value.ticket.NUEVOlimiteImporte ?? 0
+  if (perfil === 6) return Number(config.value.ticket.limiteImporte) || 0
+  const nuevoLimite = Number(config.value.ticket.NUEVOlimiteImporte)
+  return nuevoLimite || Number(config.value.ticket.limiteImporte) || 0
 })
 
 // Event data based on elevento index
@@ -657,15 +666,21 @@ function buildMessage(perfilpros: string): string {
   ].join(' ')
 
   const SEP = '*¿?*'
+  const idx = config.value.sello.elevento ?? 0
+  const msgFecha = config.value.sello[`fecha${idx}`] ?? config.value.sello.fecha ?? ''
+  const msgEvento = config.value.sello[`localidad${idx}`] ?? config.value.sello.evento ?? ''
+  const msgModelo1 = config.value.sello[`motivoi${idx}`] ?? config.value.sello.modelo1 ?? ''
+  const msgModelo2 = config.value.sello[`motivod${idx}`] ?? config.value.sello.modelo2 ?? ''
+
   const message =
     config.value.codigo.cliente + SEP +
     config.value.codigo.producto + SEP +
-    config.value.sello.fecha + SEP +
-    config.value.sello.evento + SEP +
+    msgFecha + SEP +
+    msgEvento + SEP +
     fecha_ticket + SEP +
     eltitulo + SEP +
-    config.value.sello.modelo1 + SEP +
-    config.value.sello.modelo2 + SEP +
+    msgModelo1 + SEP +
+    msgModelo2 + SEP +
     config.value.codigo.modo + SEP +
     config.value.codigo.maquina + SEP +
     mes_maquina + SEP +
@@ -679,8 +694,8 @@ function buildMessage(perfilpros: string): string {
     config.value.ticket.l1 + SEP +
     config.value.ticket.l2 + SEP +
     config.value.ticket.l3 + SEP +
-    (config.value.sello.feria ?? '') + SEP +
-    (config.value.sello.lugar ?? '') + SEP +
+    (config.value.sello[`nferia${idx}`] ?? config.value.sello.feria ?? '') + SEP +
+    (config.value.sello[`nlugar${idx}`] ?? config.value.sello.lugar ?? '') + SEP +
     (config.value.ticket.T1especial ?? '') + SEP +
     (config.value.ticket.T2especial ?? '') + SEP +
     (config.value.ticket.T3especial ?? '') + SEP +
@@ -832,8 +847,8 @@ async function imprimir(perfilpros: string): Promise<void> {
     alert('No hay suficientes sellos del segundo motivo')
     return
   }
-  if (total.value > (config.value.sello.PERFILlimiteImporte ?? 0)) {
-    alert('Ha excedido el límite de compra de ' + (config.value.sello.PERFILlimiteImporte ?? 0) + '€')
+  if (total.value > limite.value) {
+    alert('Ha excedido el límite de compra de ' + limite.value + '€')
     return
   }
   if ((2 + tarifaAT1Cantidad.value + tarifa4T1Cantidad.value + tarifaAT2Cantidad.value + tarifa4T2Cantidad.value) > tickets.value) {

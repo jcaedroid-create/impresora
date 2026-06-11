@@ -24,6 +24,7 @@ from dataclasses import dataclass, fields
 import websockets
 
 from report import OUTPUT_DIR
+from printer_backend import get_printer_backend, PrinterBackend
 
 # ─────────────────────────────────────────────
 # Configuración de logging
@@ -194,147 +195,76 @@ def _ejecutar_impresion(orden: OrdenImpresion) -> None:
     # Espera para que los PDFs se escriban completamente
     time.sleep(3)
 
-    # Enviar a impresoras
-    _imprimir()
 
-
-def _imprimir() -> None:
-    """Envía los PDFs generados a las impresoras CUPS."""
+async def _imprimir_async(backend: PrinterBackend) -> None:
+    """Envía los PDFs generados a las impresoras usando el backend configurado."""
     def _pdf(name):
         """Devuelve la ruta completa a un PDF de salida."""
         return os.path.join(OUTPUT_DIR, name)
 
     losprod = 0
 
-    # Etiqueta 1
-    if os.path.getsize(_pdf("stamp_simple_1_a.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_a.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_a_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_a_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_a2.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_a2.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_a2_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_a2_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_b.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_b.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_b_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_b_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_c.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_c.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_1_c_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_simple_1_c_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
+    # Opciones de impresión para sellos (etiquetas 55x25mm)
+    stamp_options = {
+        "media": "DC55x25",
+        "orientation-requested": "6",
+    }
 
-    # Etiqueta 2
-    if os.path.getsize(_pdf("stamp_simple_2_a.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_a.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_a_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_a_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_a2.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_a2.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_a2_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_a2_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_b.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_b.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_b_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_b_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_c.pdf")) > 2000:
-        losprod += 1
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_c.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=5"
-        )
-    if os.path.getsize(_pdf("stamp_simple_2_c_overflow.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_simple_2_c_overflow.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6"
-        )
+    # --- Etiqueta 1 (PRINTER_1) ---
+    stamp1_files = [
+        "stamp_simple_1_a.pdf", "stamp_simple_1_a_overflow.pdf",
+        "stamp_simple_1_a2.pdf", "stamp_simple_1_a2_overflow.pdf",
+        "stamp_simple_1_b.pdf", "stamp_simple_1_b_overflow.pdf",
+        "stamp_simple_1_c.pdf", "stamp_simple_1_c_overflow.pdf",
+    ]
+    for pdf_name in stamp1_files:
+        pdf_path = _pdf(pdf_name)
+        if os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 2000:
+            if "overflow" not in pdf_name:
+                losprod += 1
+            await backend.print_file(PRINTER_1, pdf_path, stamp_options)
 
-    # Tira especial
-    if os.path.getsize(_pdf("stamp_tira_1_especial.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_tira_1_especial.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=4"
-        )
-    if os.path.getsize(_pdf("stamp_tira_2_especial.pdf")) > 2000:
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_tira_2_especial.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=4"
-        )
+    # --- Etiqueta 2 (PRINTER_2) ---
+    stamp2_files = [
+        "stamp_simple_2_a.pdf", "stamp_simple_2_a_overflow.pdf",
+        "stamp_simple_2_a2.pdf", "stamp_simple_2_a2_overflow.pdf",
+        "stamp_simple_2_b.pdf", "stamp_simple_2_b_overflow.pdf",
+        "stamp_simple_2_c.pdf", "stamp_simple_2_c_overflow.pdf",
+    ]
+    for pdf_name in stamp2_files:
+        pdf_path = _pdf(pdf_name)
+        if os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 2000:
+            if "overflow" not in pdf_name:
+                losprod += 1
+            await backend.print_file(PRINTER_2, pdf_path, stamp_options)
 
-    # Tira normal
-    if os.path.getsize(_pdf("stamp_tira_1.pdf")) > 2000:
+    # --- Tiras especiales ---
+    if os.path.exists(_pdf("stamp_tira_1_especial.pdf")) and os.path.getsize(_pdf("stamp_tira_1_especial.pdf")) > 2000:
+        await backend.print_file(PRINTER_1, _pdf("stamp_tira_1_especial.pdf"), stamp_options)
+    if os.path.exists(_pdf("stamp_tira_2_especial.pdf")) and os.path.getsize(_pdf("stamp_tira_2_especial.pdf")) > 2000:
+        await backend.print_file(PRINTER_2, _pdf("stamp_tira_2_especial.pdf"), stamp_options)
+
+    # --- Tiras normales ---
+    if os.path.exists(_pdf("stamp_tira_1.pdf")) and os.path.getsize(_pdf("stamp_tira_1.pdf")) > 2000:
         losprod += 2
-        os.system(
-            f"lp -d {PRINTER_1} {_pdf('stamp_tira_1.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=4"
-        )
-    if os.path.getsize(_pdf("stamp_tira_2.pdf")) > 2000:
+        await backend.print_file(PRINTER_1, _pdf("stamp_tira_1.pdf"), stamp_options)
+    if os.path.exists(_pdf("stamp_tira_2.pdf")) and os.path.getsize(_pdf("stamp_tira_2.pdf")) > 2000:
         losprod += 2
-        os.system(
-            f"lp -d {PRINTER_2} {_pdf('stamp_tira_2.pdf')} -o media=DC55x25 "
-            f"-o orientation-requested=6 -o Occurrence=Specified -o Interval=4"
-        )
+        await backend.print_file(PRINTER_2, _pdf("stamp_tira_2.pdf"), stamp_options)
 
-    # Ticket
-    if os.path.getsize(_pdf("ticket.pdf")) > 2000:
+    # --- Ticket ---
+    if os.path.exists(_pdf("ticket.pdf")) and os.path.getsize(_pdf("ticket.pdf")) > 2000:
         media_sizes = {
             1: "117", 2: "120", 3: "123", 4: "126", 5: "129",
             6: "132", 7: "135", 8: "138", 10: "142",
         }
         size = media_sizes.get(losprod, "148")
-        os.system(f"lp -d {PRINTER_TICKET} {_pdf('ticket.pdf')} -o media=Custom.78x{size}mm")
+        ticket_options = {"media": f"Custom.78x{size}mm"}
+        await backend.print_file(PRINTER_TICKET, _pdf("ticket.pdf"), ticket_options)
 
-    if os.path.getsize(_pdf("tickettira.pdf")) > 2000:
-        os.system(f"lp -d {PRINTER_TICKET} {_pdf('tickettira.pdf')} -o media=Custom.78x117mm")
+    if os.path.exists(_pdf("tickettira.pdf")) and os.path.getsize(_pdf("tickettira.pdf")) > 2000:
+        ticket_options = {"media": "Custom.78x117mm"}
+        await backend.print_file(PRINTER_TICKET, _pdf("tickettira.pdf"), ticket_options)
 
     logger.info("Impresión completada. Productos: %d", losprod)
 
@@ -354,6 +284,7 @@ class ServidorWebSocket:
         self.host = host
         self.port = port
         self.parseador = ParseadorMensaje()
+        self.backend = get_printer_backend()
 
     async def iniciar(self) -> None:
         """Inicia el servidor WebSocket y escucha conexiones indefinidamente."""
@@ -380,8 +311,9 @@ class ServidorWebSocket:
         """
         Procesa un mensaje WebSocket:
         1. Parsea el mensaje con el protocolo *¿?*
-        2. Ejecuta la impresión en un thread separado (no bloquea el event loop)
-        3. Responde con echo del mensaje original
+        2. Genera PDFs en un thread separado (no bloquea el event loop)
+        3. Envía a impresoras via el backend configurado (IPP o CUPS)
+        4. Responde con echo del mensaje original
 
         Si el mensaje es inválido, registra el error y devuelve el mensaje sin procesar.
         """
@@ -392,8 +324,10 @@ class ServidorWebSocket:
                 "Orden parseada: cliente=%s, producto=%s",
                 orden.id_cliente, orden.id_producto,
             )
-            # Ejecutar impresión en thread separado para no bloquear el event loop
+            # Generar PDFs en thread separado para no bloquear el event loop
             await asyncio.to_thread(_ejecutar_impresion, orden)
+            # Enviar a impresoras (async, usa el backend IPP o CUPS)
+            await _imprimir_async(self.backend)
         except ValueError as e:
             logger.error("Mensaje inválido: %s", e)
         except Exception as e:
