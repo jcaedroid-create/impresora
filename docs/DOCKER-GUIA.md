@@ -1,239 +1,328 @@
-# Guía Docker — Correos Webapp
+# Guía rápida — Correos Webapp con Docker
 
 ## Índice
 
-1. [Resumen del proyecto](#resumen-del-proyecto)
-2. [Arquitectura Docker](#arquitectura-docker)
-3. [Requisitos](#requisitos)
-4. [Comandos principales](#comandos-principales)
-5. [Primer uso (build inicial)](#primer-uso-build-inicial)
-6. [Uso diario](#uso-diario)
-7. [Actualizar tras cambios en el código](#actualizar-tras-cambios-en-el-código)
-8. [Problemas resueltos durante el setup](#problemas-resueltos-durante-el-setup)
-9. [Compatibilidad con Windows](#compatibilidad-con-windows)
-10. [Características de la aplicación](#características-de-la-aplicación)
+1. [Ejecutar en un ordenador nuevo](#1-ejecutar-en-un-ordenador-nuevo)
+2. [Actualizar con cambios de la aplicación](#2-actualizar-con-cambios-de-la-aplicación)
+3. [Configurar impresoras en Linux/macOS](#3-configurar-impresoras-en-linuxmacos)
+4. [Configurar impresoras en Windows](#4-configurar-impresoras-en-windows)
 
 ---
 
-## Resumen del proyecto
+## 1. Ejecutar en un ordenador nuevo
 
-La aplicación está compuesta por 3 servicios que corren en contenedores Docker:
+### Requisitos previos
 
-| Servicio | Tecnología | Puerto | Función |
-|----------|-----------|--------|---------|
-| `meteor-app` | Meteor 1.12.1 + Node 12 + Angular 1.x | 3000 | Aplicación web principal |
-| `mongo` | MongoDB 4.4 | 27017 | Base de datos |
-| `demonio-python` | Python 2.7 + WebSocket | 8000 | Servidor WebSocket para impresora (CUPS) |
+- **Docker Desktop** instalado:
+  - Windows/macOS: https://www.docker.com/products/docker-desktop
+  - Linux: `sudo apt install docker.io docker-compose-plugin` (o equivalente)
+- **Git** instalado
+- **Puertos libres**: 9090, 8000, 8001, 27017
+- **RAM**: mínimo 4 GB
+- **Disco**: ~3 GB libres para las imágenes
 
----
-
-## Arquitectura Docker
-
-```
-┌─────────────────────────────────────────────────────┐
-│                  docker-compose.yml                   │
-├─────────────────┬──────────────┬────────────────────┤
-│   meteor-app    │    mongo     │  demonio-python    │
-│   :3000         │   :27017     │    :8000           │
-│                 │              │                     │
-│  Dockerfile.    │  mongo:4.4   │  Dockerfile.       │
-│  meteor         │  (imagen     │  demonio           │
-│                 │   oficial)   │                     │
-├─────────────────┴──────────────┴────────────────────┤
-│                  red: correos-net                     │
-└─────────────────────────────────────────────────────┘
-```
-
-### Dockerfile.meteor (single-stage)
-
-Usa la imagen `geoffreybooth/meteor-base:1.12.1` que ya incluye:
-- Meteor 1.12.1
-- Node 12 (compatible con fibers)
-- Herramientas de compilación (make, g++, python)
-
-Pasos del build:
-1. Instala dependencias npm del proyecto
-2. Ejecuta `meteor build` para generar un bundle de producción
-3. Instala dependencias del bundle (incluyendo `@babel/runtime`)
-4. Copia el bundle a `/app` y arranca con `node main.js`
-
-### Dockerfile.demonio
-
-Imagen Python 2.7 slim con:
-- CUPS client (para enviar a impresora)
-- SimpleWebSocketServer + reportlab
-- Repositorios apuntados a archive.debian.org (Buster archivado)
-
----
-
-## Requisitos
-
-- **Docker Desktop** (incluye Docker Engine + Docker Compose)
-- **Espacio en disco**: ~3 GB para las imágenes
-- **RAM**: mínimo 4 GB recomendados
-- **Puertos libres**: 3000, 8000, 27017
-
----
-
-## Comandos principales
-
-| Acción | Comando |
-|--------|---------|
-| Construir imágenes | `docker-compose build` |
-| Arrancar todo | `docker-compose up -d` |
-| Ver logs de Meteor | `docker-compose logs -f meteor-app` |
-| Ver logs de todo | `docker-compose logs -f` |
-| Estado de servicios | `docker-compose ps` |
-| Parar todo | `docker-compose down` |
-| Parar sin eliminar | `docker-compose stop` |
-| Reanudar | `docker-compose start` |
-| Rebuild tras cambios | `docker-compose up -d --build meteor-app` |
-| Rebuild sin caché | `docker-compose build --no-cache meteor-app` |
-| Borrar todo + datos | `docker-compose down -v` |
-
----
-
-## Primer uso (build inicial)
+### Pasos
 
 ```bash
 # 1. Clonar el repositorio
 git clone <url-del-repo>
 cd impresora
 
-# 2. Construir todas las imágenes (primera vez: 10-15 min)
-docker-compose build
+# 2. Construir las imágenes (primera vez: 10-20 min)
+docker compose build
 
-# 3. Arrancar servicios
-docker-compose up -d
+# 3. Arrancar todo
+docker compose up -d
 
-# 4. Verificar que arranca
-docker-compose logs -f meteor-app
-# Esperar a ver mensajes de "autopublish" y "ufs: temp directory created"
-
-# 5. Abrir en navegador
-# http://localhost:3000
+# 4. Verificar que arranca correctamente
+docker compose ps
+docker compose logs -f meteor-app
 ```
 
-La primera build tarda porque descarga la imagen base de Meteor (~1.5 GB) y compila el bundle. Las builds siguientes son mucho más rápidas gracias a la caché de Docker.
+Espera a que en los logs aparezca algo como:
+```
+ufs: temp directory created at /tmp/ufs
+```
+
+### 5. Abrir la aplicación
+
+Abre en el navegador: **http://localhost:9090**
+
+### 6. Parar la aplicación
+
+```bash
+docker compose down
+```
+
+### Resumen de comandos diarios
+
+| Quiero... | Comando |
+|-----------|---------|
+| Arrancar | `docker compose up -d` |
+| Parar | `docker compose down` |
+| Ver logs | `docker compose logs -f` |
+| Ver estado | `docker compose ps` |
 
 ---
 
-## Uso diario
+## 2. Actualizar con cambios de la aplicación
+
+Cuando hay cambios en el código (por ejemplo, alguien hizo un push con mejoras):
+
+### Caso A: Cambios normales en el código
 
 ```bash
-# Arrancar (si los contenedores están parados)
-docker-compose up -d
+# 1. Descargar cambios del repositorio
+git pull
 
-# Trabajar en http://localhost:3000
+# 2. Reconstruir solo la app (usa caché, rápido)
+docker compose up -d --build meteor-app
+```
 
-# Al terminar
-docker-compose down
+Esto tarda entre 2-5 minutos porque reutiliza la caché de Docker.
+
+### Caso B: Cambios en package.json (nuevas dependencias)
+
+```bash
+# 1. Descargar cambios
+git pull
+
+# 2. Rebuild sin caché (más lento, ~10-20 min)
+docker compose build --no-cache meteor-app
+
+# 3. Arrancar
+docker compose up -d
+```
+
+### Caso C: Cambios en el demonio Python
+
+El demonio usa un volumen montado, así que no necesita rebuild:
+
+```bash
+git pull
+docker compose restart demonio-python
+```
+
+### Caso D: Cambios en docker-compose.yml o Dockerfiles
+
+```bash
+git pull
+docker compose down
+docker compose build
+docker compose up -d
+```
+
+### Tip: Si el build tarda demasiado
+
+Si `docker compose build` tarda más de 20 minutos, puedes construir la imagen en otro ordenador más potente y transferirla:
+
+```bash
+# En el ordenador potente
+docker compose build meteor-app
+docker save impresora-meteor-app:latest | gzip > meteor-app.tar.gz
+
+# Copiar el archivo al otro ordenador (USB, scp, etc.)
+
+# En el ordenador lento
+docker load < meteor-app.tar.gz
+docker compose up -d
 ```
 
 ---
 
-## Actualizar tras cambios en el código
+## 3. Configurar impresoras en Linux/macOS
 
-### Cambios en el código de la webapp (client/server/imports):
+La impresión funciona a través de **CUPS** (sistema de impresión de Linux/macOS). Docker se comunica con el CUPS del ordenador host a través de un socket compartido.
 
-```bash
-docker-compose up -d --build meteor-app
-```
-
-Esto reconstruye la imagen y reinicia el servicio. Si solo cambió código (no `package.json`), el paso 1 (npm install) sale de caché.
-
-### Cambios en package.json:
+### Paso 1: Verificar que CUPS funciona
 
 ```bash
-docker-compose build --no-cache meteor-app
-docker-compose up -d meteor-app
+# Linux
+systemctl status cups
+# Si no está instalado: sudo apt install cups
+
+# macOS (viene preinstalado, no necesita nada)
+lpstat -p
 ```
 
-### Cambios en el demonio Python:
-
-No necesita rebuild porque usa un volumen (`./demonio:/app`). Solo reinicia:
+### Paso 2: Obtener el nombre exacto de tu impresora
 
 ```bash
-docker-compose restart demonio-python
+lpstat -p -d
 ```
+
+Ejemplo de salida:
+```
+printer Canon_TS8300_series is idle.
+system default destination: Canon_TS8300_series
+```
+
+El nombre que necesitas es `Canon_TS8300_series` (exacto, con mayúsculas).
+
+### Paso 3: Configurar el archivo .env
+
+Crea un archivo `.env` en la raíz del proyecto:
+
+```env
+PRINTER_BACKEND=cups
+PRINTER_1=Canon_TS8300_series
+PRINTER_2=Canon_TS8300_series
+PRINTER_TICKET=Canon_TS8300_series
+```
+
+Reemplaza `Canon_TS8300_series` por el nombre real de tu impresora.
+
+### Paso 4: Verificar el volumen de CUPS
+
+En `docker-compose.yml`, el servicio `demonio-python` ya tiene el volumen:
+
+```yaml
+volumes:
+  - /var/run/cups:/var/run/cups:ro
+```
+
+En **macOS**, si no funciona, cambia a:
+```yaml
+volumes:
+  - /private/var/run/cups:/var/run/cups:ro
+```
+
+### Paso 5: Arrancar y probar
+
+```bash
+docker compose up -d
+
+# Probar impresión desde el contenedor
+docker compose exec demonio-python lp -d Canon_TS8300_series /dev/null
+```
+
+### Paso 6: Verificar desde la app
+
+1. Abre http://localhost:9090/kiosko
+2. Selecciona cantidades y pulsa el carrito
+3. Comprueba logs: `docker compose logs -f demonio-python`
+
+Deberías ver:
+```
+Printing ticket
+Printing stamps
+```
+
+### Solución de problemas (Linux/macOS)
+
+| Problema | Solución |
+|----------|----------|
+| `lp: error - no default destination` | Ejecuta `lpstat -p` y verifica el nombre de la impresora |
+| `Permission denied` | `sudo usermod -aG lpadmin $USER` y reinicia sesión |
+| Socket no encontrado | Verifica que CUPS corre: `systemctl start cups` |
+| Impresora pausada | `cupsenable Canon_TS8300_series` |
 
 ---
 
-## Problemas resueltos durante el setup
+## 4. Configurar impresoras en Windows
 
-| Problema | Causa | Solución |
-|----------|-------|----------|
-| `ecmascript` vs `angular-babel` conflicto | Ambos manejan `*.js` | Eliminado `ecmascript` de `.meteor/packages` |
-| `npm: not found` en build | PATH no incluye npm en la imagen de Meteor | Usar `meteor npm` en vez de `npm` |
-| `fibers` ABI incompatible | Build multi-stage usaba Node diferente al runtime | Single-stage con la misma imagen base |
-| Repos Debian archivados | Stretch/Buster fuera de soporte | Apuntar a `archive.debian.org` |
-| `@babel/runtime` not found | No estaba en dependencias del proyecto | Añadido a `package.json` y al install del bundle |
-| `node:14.21.4-slim` not found | Tag inexistente en Docker Hub | Eliminado multi-stage, usar single-stage |
+En Windows **no existe CUPS**. La impresión se hace mediante **IPP** (Internet Printing Protocol) directamente a la IP de la impresora en la red WiFi/LAN.
 
----
+### Paso 1: Obtener la IP de tu impresora
 
-## Compatibilidad con Windows
+**Opción A** — Desde la impresora:
+- En la Canon TS8300: Configuración → LAN inalámbrica → Confirmar configuración de red
+- Anota la IP (ejemplo: `192.168.1.50`)
 
-**Sí, funciona en Windows** con Docker Desktop instalado. Los pasos son idénticos:
+**Opción B** — Desde Windows:
+```powershell
+# Ver impresoras y sus puertos
+Get-Printer | Format-Table Name, PortName
 
-### Requisitos en Windows:
-1. **Docker Desktop para Windows** — https://www.docker.com/products/docker-desktop
-2. **WSL2** habilitado (Docker Desktop lo pide durante la instalación)
-3. Los mismos puertos libres (3000, 8000, 27017)
+# O buscar por red
+ping Canon_TS8300.local
+```
 
-### Para ejecutar en Windows:
+### Paso 2: Crear archivo .env
+
+Crea un archivo `.env` en la raíz del proyecto:
+
+```env
+PRINTER_BACKEND=ipp
+PRINTER_1=192.168.1.50
+PRINTER_2=192.168.1.50
+PRINTER_TICKET=192.168.1.50
+```
+
+Reemplaza `192.168.1.50` con la IP real de tu impresora.
+
+### Paso 3: Usar el override de Windows
+
+El volumen `/var/run/cups` no existe en Windows. Copia el override:
 
 ```powershell
-# En PowerShell o CMD, desde la carpeta del proyecto
-docker-compose build
-docker-compose up -d
-
-# Abrir http://localhost:3000
+copy docker-compose.override.windows.yml docker-compose.override.yml
 ```
 
-### Notas para Windows:
-- Los comandos son exactamente los mismos (`docker-compose build`, `up`, `down`, etc.)
-- Docker Desktop en Windows usa WSL2 por debajo, que ejecuta Linux — las imágenes Linux funcionan sin problemas
-- El volumen del demonio (`./demonio:/app`) funciona igual, Docker traduce las rutas automáticamente
-- Si hay problemas de permisos con volúmenes, asegurarse de que la carpeta del proyecto esté dentro del filesystem de WSL2 (mejor rendimiento)
-- El rendimiento de build puede ser ligeramente más lento que en Linux nativo, pero el resultado final es idéntico
+Si no existe ese archivo, crea `docker-compose.override.yml` con:
 
-### Posible problema en Windows:
-- **Line endings (CRLF vs LF)**: si Git convierte los archivos a CRLF en Windows, algunos scripts pueden fallar. Solución: configurar Git para mantener LF:
-  ```bash
-  git config core.autocrlf input
-  ```
-  O añadir un `.gitattributes` en la raíz:
-  ```
-  * text=auto eol=lf
-  ```
+```yaml
+services:
+  demonio-python:
+    volumes:
+      - ./demonio:/app
+    # Se elimina el volumen /var/run/cups que no existe en Windows
+```
+
+### Paso 4: Arrancar
+
+```powershell
+docker compose build
+docker compose up -d
+```
+
+### Paso 5: Verificar conexión con la impresora
+
+```powershell
+# Ver estado del demonio
+curl http://localhost:8001/status
+
+# Descubrir impresoras en la red
+curl http://localhost:8001/printers
+```
+
+### Paso 6: Probar impresión
+
+1. Abre http://localhost:9090
+2. Ve al Kiosko, selecciona cantidades y pulsa el carrito
+3. La impresión va directamente a la impresora por IPP (puerto 631)
+
+### Requisitos en Windows
+
+- **Docker Desktop para Windows** con WSL2 habilitado
+- La impresora debe estar **conectada a la misma red WiFi/LAN** que el ordenador
+- La impresora debe soportar **IPP** (la mayoría de impresoras WiFi modernas lo soportan)
+
+### Solución de problemas (Windows)
+
+| Problema | Solución |
+|----------|----------|
+| No conecta con la impresora | Verifica que la IP es correcta: `ping 192.168.1.50` |
+| Timeout de conexión | Verifica que el ordenador y la impresora están en la misma red |
+| `PRINTER_BACKEND` no se aplica | Asegúrate de que el archivo `.env` está en la raíz del proyecto |
+| Docker no encuentra el override | El archivo `docker-compose.override.yml` debe estar junto a `docker-compose.yml` |
+| Volumen `/var/run/cups` error | Necesitas el override de Windows (paso 3) |
 
 ---
 
-## Características de la aplicación
+## Resumen visual
 
-### Stack tecnológico:
-- **Frontend**: Angular 1.x + Angular Material
-- **Backend**: Meteor 1.12.1 (Node 12)
-- **Base de datos**: MongoDB 4.4
-- **Servicio auxiliar**: Python 2.7 WebSocket (comunicación con impresora CUPS)
+```
+┌─────────────────────────────────────────────────────┐
+│              Arquitectura del sistema                │
+├─────────────────┬──────────────┬────────────────────┤
+│   meteor-app    │    mongo     │  demonio-python    │
+│   :9090         │   :27017     │   :8000 / :8001    │
+│   (webapp)      │   (datos)    │   (impresión)      │
+├─────────────────┴──────────────┴────────────────────┤
+│                 docker compose                       │
+└─────────────────────────────────────────────────────┘
 
-### Módulos principales:
-- **Home** — pantalla principal
-- **Kiosko** — interfaz de kiosko (punto de venta/atención)
-- **Imprimir** — generación e impresión de etiquetas (tarifas América, Andorra, etc.)
-- **Afkar** — módulo contenedor de la app Angular
-
-### APIs/Colecciones:
-- **Orders** — gestión de pedidos
-- **Images** — gestión de imágenes (con GridFS/Local storage)
-- **Config** — configuración de la aplicación
-
-### Puertos:
-- `3000` — Aplicación web (Meteor)
-- `8000` — WebSocket del demonio Python (comunicación con impresora)
-- `27017` — MongoDB (accesible para herramientas como Compass)
-
-### Datos persistentes:
-- MongoDB almacena datos en el volumen Docker `mongo-data`
-- Los datos sobreviven a `docker-compose down` (se pierden solo con `docker-compose down -v`)
+Linux/macOS → CUPS (socket local)    → Impresora USB/red
+Windows     → IPP  (protocolo red)   → Impresora WiFi
+```
