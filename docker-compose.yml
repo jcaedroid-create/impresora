@@ -15,7 +15,9 @@ services:
       - PRINTER_NAME=Canon_TS8300_USB
     depends_on:
       mongo:
-        condition: service_started
+        condition: service_healthy
+      demonio-python:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - correos-net
@@ -37,6 +39,13 @@ services:
     volumes:
       - ./demonio:/app
       - /var/run/cups:/var/run/cups  # Acceso al CUPS del host para imprimir
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s=socket.socket(); s.settimeout(2); s.connect(('localhost',8001)); s.close()"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
     networks:
       - correos-net
 
@@ -49,6 +58,13 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    restart: unless-stopped
     networks:
       - correos-net
 

@@ -123,13 +123,13 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Verificar que `insertOrder`, `downloadXLS`, `initConfig`, `updateRollos` responden correctamente
     - _Requisitos: 1.2, 7.1_
 
-- [-] 4. Checkpoint Fase 2 — Verificar Meteor actualizado
+- [x] 4. Checkpoint Fase 2 — Verificar Meteor actualizado
   - Asegurar que todos los tests pasan, preguntar al usuario si surgen dudas.
   - Crear tag de Git: `git tag v0.2-meteor-actualizado`
   - Verificar que Meteor 3.x arranca y sirve la aplicación
 
 - [ ] 5. Fase 3 — Frontend: Vue 3 + Router + Tailwind
-  - [ ] 5.1 Configurar proyecto Vue 3 dentro de Meteor
+  - [x] 5.1 Configurar proyecto Vue 3 dentro de Meteor
     - Instalar `vue`, `vue-router`, `vue-meteor-tracker`, `tailwindcss`, `postcss`, `autoprefixer`
     - Crear `tailwind.config.js` y `postcss.config.js`
     - Crear `correos-webapp/imports/ui/App.vue` como componente raíz
@@ -138,21 +138,21 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Crear `correos-webapp/client/main.css` con directivas `@tailwind`
     - _Requisitos: 3.1, 3.2, 3.5_
 
-  - [ ] 5.2 Implementar composables (lógica compartida)
+  - [x] 5.2 Implementar composables (lógica compartida)
     - Crear `imports/ui/composables/useWebSocket.ts`: conexión WebSocket, envío, recepción, reconexión con backoff
     - Crear `imports/ui/composables/useConfig.ts`: integración con `vue-meteor-tracker` y `useTracker()` para colección `config`
     - Crear `imports/ui/composables/useOrders.ts`: inserción de órdenes y descarga XLS
     - Crear `imports/ui/composables/useImages.ts`: gestión de imágenes modelo1/modelo2
     - _Requisitos: 3.3, 3.4, 3.6_
 
-  - [ ] 5.3 Migrar componente HomeView
+  - [x] 5.3 Migrar componente HomeView
     - Crear `imports/ui/views/HomeView.vue`
     - Replicar funcionalidad de `imports/ui/components/home/home.html` + `home.js`
     - Usar Tailwind CSS para estilos (reemplazando Angular Material)
     - Integrar navegación con `vue-router`
     - _Requisitos: 3.1, 3.2_
 
-  - [ ] 5.4 Migrar componente KioskoView
+  - [x] 5.4 Migrar componente KioskoView
     - Crear `imports/ui/views/KioskoView.vue`
     - Replicar selección de sellos y cantidades desde `imports/ui/components/kiosko/kiosko.js`
     - Usar `useConfig` para datos reactivos de precios y tarifas
@@ -160,25 +160,25 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Implementar la construcción del mensaje con los 31 campos del protocolo
     - _Requisitos: 3.1, 3.3, 3.4_
 
-  - [ ] 5.5 Migrar componente ImprimirView
+  - [x] 5.5 Migrar componente ImprimirView
     - Crear `imports/ui/views/ImprimirView.vue`
     - Replicar funcionalidad de `imports/ui/components/imprimir/imprimir.js`
     - Manejar las variaciones de plantilla de impresión (2026, América, Andorra)
     - _Requisitos: 3.1_
 
-  - [ ] 5.6 Migrar componente MaquinaView
+  - [x] 5.6 Migrar componente MaquinaView
     - Crear `imports/ui/views/MaquinaView.vue`
     - Replicar configuración de máquina desde `imports/ui/components/maquina/maquina.js`
     - Usar `useConfig` para leer/escribir configuración de la máquina
     - _Requisitos: 3.1, 3.4_
 
-  - [ ] 5.7 Migrar componente NavComponent
+  - [x] 5.7 Migrar componente NavComponent
     - Crear `imports/ui/components/NavComponent.vue`
     - Replicar navegación desde `imports/ui/components/nav/nav.js`
     - Usar `<router-link>` para navegación entre vistas
     - _Requisitos: 3.1, 3.2_
 
-  - [ ] 5.8 Migrar componente SubirImagenView e ImageCropDialog
+  - [x] 5.8 Migrar componente SubirImagenView e ImageCropDialog
     - Crear `imports/ui/views/SubirImagenView.vue`
     - Crear `imports/ui/components/ImageCropDialog.vue`
     - Reemplazar `ng-file-upload` con HTML5 FileReader API
@@ -186,7 +186,7 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Usar `useImages` para subir imagen recortada a la colección `images`
     - _Requisitos: 3.1, 3.6_
 
-  - [ ]* 5.9 Tests unitarios de componentes Vue 3
+  - [x] 5.9 Tests unitarios de componentes Vue 3
     - Crear tests con Vitest + `@vue/test-utils`
     - Verificar que cada componente renderiza sin errores
     - Verificar navegación entre rutas
@@ -195,7 +195,7 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Verificar construcción del mensaje WebSocket con formato correcto
     - _Requisitos: 7.3_
 
-  - [ ]* 5.10 Test PBT del protocolo WebSocket desde el frontend (Property 1 — JS)
+  - [x] 5.10 Test PBT del protocolo WebSocket desde el frontend (Property 1 — JS)
     - **Property 1: Round-trip del mensaje WebSocket (lado frontend)**
     - Crear `tests/test_ws_protocol_frontend.ts` con fast-check
     - Generar mensajes de 31 campos con datos arbitrarios válidos
@@ -203,26 +203,26 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Mínimo 100 iteraciones
     - **Valida: Requisitos 3.3, 7.5, 8.4**
 
-- [ ] 6. Checkpoint Fase 3 — Verificar frontend migrado
+- [x] 6. Checkpoint Fase 3 — Verificar frontend migrado
   - Asegurar que todos los tests pasan, preguntar al usuario si surgen dudas.
   - Crear tag de Git: `git tag v0.3-frontend-vue3`
   - Verificar que la aplicación Vue 3 navega correctamente y se comunica con el WebSocket
 
 - [ ] 7. Fase 4 — Despliegue Docker y Tests E2E
-  - [ ] 7.1 Actualizar docker-compose.yml completo
+  - [x] 7.1 Actualizar docker-compose.yml completo
     - Verificar que los tres servicios (meteor-app, demonio-python, mongo) usan imágenes actualizadas
     - Asegurar que la red `correos-net` permite comunicación entre servicios
     - Verificar que volúmenes y puertos están correctamente mapeados
     - Añadir healthcheck al servicio demonio-python
     - _Requisitos: 6.1, 6.2, 6.3, 6.4_
 
-  - [ ] 7.2 Configurar framework de tests E2E con Playwright
+  - [x] 7.2 Configurar framework de tests E2E con Playwright
     - Instalar Playwright y configurar `playwright.config.ts`
     - Crear fixtures para arrancar servicios Docker antes de los tests
     - Crear helpers para interacción WebSocket en los tests
     - _Requisitos: 7.2, 7.3_
 
-  - [ ]* 7.3 Tests E2E del flujo completo
+  - [x] 7.3 Tests E2E del flujo completo
     - Crear `tests/e2e/flujo-completo.spec.ts`
     - Test: navegar a kiosko → seleccionar sellos → enviar orden WebSocket → verificar echo
     - Test: pausar/reanudar impresora desde la UI
@@ -230,14 +230,14 @@ Migración incremental de correos-webapp desde un stack obsoleto (Meteor 1.12, A
     - Test: verificar que la configuración se refleja reactivamente en la UI
     - _Requisitos: 7.1, 7.2, 7.3, 7.4_
 
-  - [ ] 7.4 Limpiar código legacy
+  - [x] 7.4 Limpiar código legacy
     - Eliminar archivos de AngularJS: `imports/ui/components/afkar/`, `home/`, `kiosko/`, `imprimir/`, `maquina/`, `nav/`, `subirImagen/`, `subirImagenCrop/`
     - Eliminar `demonio/servidor-ws.py` (reemplazado por `servidor_ws_nuevo.py`)
     - Eliminar dependencias npm de AngularJS del `package.json`
     - Eliminar archivos `.less` (reemplazados por Tailwind)
     - _Requisitos: 8.2_
 
-- [ ] 8. Checkpoint Final — Migración completa
+- [-] 8. Checkpoint Final — Migración completa
   - Asegurar que todos los tests pasan, preguntar al usuario si surgen dudas.
   - Crear tag de Git: `git tag v1.0-migracion-completa`
   - Verificar que `docker-compose up` arranca el sistema completo con el nuevo stack
